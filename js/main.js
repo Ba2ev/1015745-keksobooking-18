@@ -1,10 +1,16 @@
 'use strict';
+var AD_TITLES = ['Little place', 'My place', 'Big place', 'Comfortable place', 'Place is near subway', 'Place for travellers', 'Quite place', 'Place in roman style'];
+var AD_TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var AD_CHEKINS = ['12:00', '13:00', '14:00'];
+var AD_CHEKOUTS = ['12:00', '13:00', '14:00'];
+var AD_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var AD_DESCRIPTIONS = ['Excellent place for family', 'Big place for parties', 'Place without neighbours', 'Good variant for businessmans', 'Supermarket is near', 'Couples only', 'Place with personal garage', 'Pets allowed'];
+var AD_PHOTOES = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+
 var MAP_WIDTH = 1200;
 var MAP_MIN_HEIGHT = 130;
 var MAP_MAX_HEIGHT = 630;
-var PIN_WIDTH = 62;
-var PIN_HEIGHT = 84;
-var PLACE_COUNT = 8;
+var AD_COUNT = 8;
 var PRICE_MIN_VALUE = 1000;
 var PRICE_MAX_VALUE = 100000;
 var ROOM_MAX_VALUE = 5;
@@ -15,11 +21,14 @@ var mapPinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
+var pinWidth = document.querySelector('.map__pin').offsetWidth;
+var pinHeight = document.querySelector('.map__pin').offsetHeight;
+
 /**
  * Активирует карту с метками
  * @param {string} mapIndicator - индикатор элемента карты
  */
-var activeMap = function (mapIndicator) {
+var activateMap = function (mapIndicator) {
   var map = document.querySelector(mapIndicator);
   map.classList.remove('map--faded');
 };
@@ -37,10 +46,10 @@ var getRandomValue = function (minValue, maxValue) {
 
 /**
  * Создаёт и возвращает массив элементов случайной длины из заданного массива
- * @param {object[]} baseArray - заданный массив
- * @return {object[]} randomArray - массив случайной длины из заданного массива
+ * @param {*[]} baseArray - заданный массив
+ * @return {*[]} randomArray - массив случайной длины из заданного массива
  */
-var createRandomArray = function (baseArray) {
+var getRandomLengthArray = function (baseArray) {
   var randomArray = [];
   var randomCount = getRandomValue(1, baseArray.length);
   var baseArrayCopy = baseArray.slice();
@@ -53,61 +62,53 @@ var createRandomArray = function (baseArray) {
 };
 
 /**
- * Создаёт и возвращает массив элементов(магов) указанной длины
- * @param {number} placesCount - кол-во элементов в массиве
- * @return {object[]} placesNear - массив элементов (магов)
+ * Создаёт и возвращает массив элементов (мест) указанной длины
+ * @param {number} adsCount - кол-во элементов в массиве
+ * @return {object[]} ads - массив элементов (мест)
  */
-var createNearPlaces = function (placesCount) {
-
-  var PLACE_TITLES = ['Little place', 'My place', 'Big place', 'Comfortable place', 'Place is near subway', 'Place for travellers', 'Quite place', 'Place in roman style'];
-  var PLACE_TYPES = ['palace', 'flat', 'house', 'bungalo'];
-  var PLACE_CHEKINS = ['12:00', '13:00', '14:00'];
-  var PLACE_CHEKOUTS = ['12:00', '13:00', '14:00'];
-  var PLACE_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var PLACE_DESCRIPTIONS = ['Excellent place for family', 'Big place for parties', 'Place without neighbours', 'Good variant for businessmans', 'Supermarket is near', 'Couples only', 'Place with personal garage', 'Pets allowed'];
-  var PLACE_PHOTOES = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-
-  var placesNear = [];
-  for (var i = 0; i < placesCount; i++) {
-    var placeNear = {};
-    placeNear.author = {
-      'avatar': 'img/avatars/user0' + (i + 1) + '.png'
+var createAds = function (adsCount) {
+  var ads = [];
+  for (var i = 0; i < adsCount; i++) {
+    var ad = {
+      author: {
+        avatar: 'img/avatars/user0' + (i + 1) + '.png'
+      },
+      location: {
+        x: getRandomValue(pinWidth, MAP_WIDTH) - pinWidth / 2,
+        y: getRandomValue(MAP_MIN_HEIGHT + pinHeight, MAP_MAX_HEIGHT) - pinHeight
+      },
     };
-    placeNear.location = {
-      'x': getRandomValue(PIN_WIDTH, MAP_WIDTH) - PIN_WIDTH / 2,
-      'y': getRandomValue(MAP_MIN_HEIGHT + PIN_HEIGHT, MAP_MAX_HEIGHT) - PIN_HEIGHT
+    ad.offer = {
+      title: AD_TITLES[i],
+      address: String(ad.location.x) + ', ' + String(ad.location.y),
+      price: getRandomValue(PRICE_MIN_VALUE, PRICE_MAX_VALUE),
+      type: AD_TYPES[getRandomValue(0, AD_TYPES.length - 1)],
+      rooms: getRandomValue(1, ROOM_MAX_VALUE),
+      guests: getRandomValue(1, GUEST_MAX_VALUE),
+      checkin: AD_CHEKINS[getRandomValue(0, AD_CHEKINS.length - 1)],
+      checkout: AD_CHEKOUTS[getRandomValue(0, AD_CHEKOUTS.length - 1)],
+      features: getRandomLengthArray(AD_FEATURES),
+      description: AD_DESCRIPTIONS[getRandomValue(0, AD_DESCRIPTIONS.length - 1)],
+      photos: getRandomLengthArray(AD_PHOTOES)
     };
-    placeNear.offer = {
-      'title': PLACE_TITLES[i],
-      'address': String(placeNear.location.x) + ', ' + String(placeNear.location.y),
-      'price': getRandomValue(PRICE_MIN_VALUE, PRICE_MAX_VALUE),
-      'type': PLACE_TYPES[getRandomValue(0, PLACE_TYPES.length - 1)],
-      'rooms': getRandomValue(1, ROOM_MAX_VALUE),
-      'guests': getRandomValue(1, GUEST_MAX_VALUE),
-      'checkin': PLACE_CHEKINS[getRandomValue(0, PLACE_CHEKINS.length - 1)],
-      'checkout': PLACE_CHEKOUTS[getRandomValue(0, PLACE_CHEKOUTS.length - 1)],
-      'features': createRandomArray(PLACE_FEATURES),
-      'description': PLACE_DESCRIPTIONS[getRandomValue(0, PLACE_DESCRIPTIONS.length - 1)],
-      'photos': createRandomArray(PLACE_PHOTOES)
-    };
-    placesNear.push(placeNear);
+    ads.push(ad);
   }
-  return placesNear;
+  return ads;
 };
 
 /**
  * Создаёт и возвращает элемент с заданным набором параметров
- * @param {object} place - элемент с заданным набором параметров
+ * @param {object} ad - элемент с заданным набором параметров
  * @return {HTMLDivElement} placeElement - HTML-разметка для элемента с заданным набором параметров
  */
-var createPlace = function (place) {
-  var placeElement = mapPinTemplate.cloneNode(true);
+var createPlace = function (ad) {
+  var adElement = mapPinTemplate.cloneNode(true);
 
-  placeElement.style = 'left: ' + place.location.x + 'px; top: ' + place.location.y + 'px';
-  placeElement.querySelector('IMG').src = place.author.avatar;
-  placeElement.querySelector('IMG').alt = place.offer.title;
+  adElement.style = 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px';
+  adElement.querySelector('IMG').src = ad.author.avatar;
+  adElement.querySelector('IMG').alt = ad.offer.title;
 
-  return placeElement;
+  return adElement;
 };
 
 /**
@@ -123,10 +124,10 @@ var createFragment = function (baseArray) {
   return baseFragment;
 };
 
-activeMap('.map');
+activateMap('.map');
 
-var placesNear = createNearPlaces(PLACE_COUNT);
+var ads = createAds(AD_COUNT);
 
-var fragment = createFragment(placesNear);
+var fragment = createFragment(ads);
 
 mapPins.appendChild(fragment);
