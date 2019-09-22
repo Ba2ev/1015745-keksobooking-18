@@ -1,35 +1,42 @@
 'use strict';
-var AD_TITLES = ['Little place', 'My place', 'Big place', 'Comfortable place', 'Place is near subway', 'Place for travellers', 'Quite place', 'Place in roman style'];
+var AD_TITLES = ['Небольшое жильё', 'Моё пространство', 'Просторное жильё', 'Комфортное место', 'Жильё возле метро', 'Ночлег для пушественников', 'Тихое место', 'Жилье в романском стиле'];
 var AD_TYPES = ['palace', 'flat', 'house', 'bungalo'];
 var AD_CHEKINS = ['12:00', '13:00', '14:00'];
 var AD_CHEKOUTS = ['12:00', '13:00', '14:00'];
 var AD_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var AD_DESCRIPTIONS = ['Excellent place for family', 'Big place for parties', 'Place without neighbours', 'Good variant for businessmans', 'Supermarket is near', 'Couples only', 'Place with personal garage', 'Pets allowed'];
+var AD_DESCRIPTIONS = ['Прекрасное место для семейного отдыха', 'Много места, чтобы устроить вечеринку!', 'Нет соседей поблизости', 'Хороший вариант для деловых поездок', 'Рядом есть супермаркет', 'Одиночное размещение не допускается', 'Есть персональный гараж', 'Допускается размещение с животными'];
 var AD_PHOTOES = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
 var MAP_WIDTH = 1200;
 var MAP_MIN_HEIGHT = 130;
 var MAP_MAX_HEIGHT = 630;
 var AD_COUNT = 8;
+var AD_PHOTO_WIDTH = 45;
+var AD_PHOTO_HEIGHT = 40;
 var PRICE_MIN_VALUE = 1000;
-var PRICE_MAX_VALUE = 100000;
+var PRICE_MAX_VALUE = 50000;
 var ROOM_MAX_VALUE = 5;
 var GUEST_MAX_VALUE = 8;
+
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
+
+var map = document.querySelector('.map');
+var mapFilters = document.querySelector('.map__filters-container');
 
 var mapPins = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin')
   .content
   .querySelector('.map__pin');
 
-var pinWidth = document.querySelector('.map__pin').offsetWidth;
-var pinHeight = document.querySelector('.map__pin').offsetHeight;
+var mapCardTemplate = document.querySelector('#card')
+  .content
+  .querySelector('.map__card');
 
 /**
  * Активирует карту с метками
- * @param {string} mapIndicator - индикатор элемента карты
  */
-var activateMap = function (mapIndicator) {
-  var map = document.querySelector(mapIndicator);
+var activateMap = function () {
   map.classList.remove('map--faded');
 };
 
@@ -62,6 +69,30 @@ var getRandomLengthArray = function (baseArray) {
 };
 
 /**
+ * Переводит с английского тип предлагаемого жилья
+ * @param {string} adOfferType - тип предлагаемого жилья на английском
+ * @return {string} translate -тип предлагаемого жилья на русском
+ */
+var translateOfferType = function (adOfferType) {
+  var translate;
+  switch (adOfferType) {
+    case 'palace':
+      translate = 'Дворец';
+      break;
+    case 'flat':
+      translate = 'Квартира';
+      break;
+    case 'house':
+      translate = 'Дом';
+      break;
+    case 'bungalo':
+      translate = 'Бунгало';
+      break;
+  }
+  return translate;
+};
+
+/**
  * Создаёт и возвращает массив элементов (мест) указанной длины
  * @param {number} adsCount - кол-во элементов в массиве
  * @return {object[]} ads - массив элементов (мест)
@@ -74,8 +105,8 @@ var createAds = function (adsCount) {
         avatar: 'img/avatars/user0' + (i + 1) + '.png'
       },
       location: {
-        x: getRandomValue(pinWidth, MAP_WIDTH) - pinWidth / 2,
-        y: getRandomValue(MAP_MIN_HEIGHT + pinHeight, MAP_MAX_HEIGHT) - pinHeight
+        x: getRandomValue(PIN_WIDTH, MAP_WIDTH) - PIN_WIDTH / 2,
+        y: getRandomValue(MAP_MIN_HEIGHT, MAP_MAX_HEIGHT) - PIN_HEIGHT
       },
     };
     ad.offer = {
@@ -97,11 +128,34 @@ var createAds = function (adsCount) {
 };
 
 /**
+ * @typedef {{author: {
+ *              avatar: string
+ *            },
+ *            location: {
+ *              x: number,
+ *              y: number
+ *            },
+ *            offer: {
+ *              title: number,
+ *              address: string,
+ *              price: number,
+ *              type: string,
+ *              rooms: number,
+ *              guests: number,
+ *              checkin: string,
+ *              checkout: string,
+ *              features: object[],
+ *              description: string,
+ *              photos: object[]
+ *            }}} Ad
+ */
+
+/**
  * Создаёт и возвращает элемент с заданным набором параметров
- * @param {object} ad - элемент с заданным набором параметров
+ * @param {ad} ad - элемент с заданным набором параметров
  * @return {HTMLDivElement} placeElement - HTML-разметка для элемента с заданным набором параметров
  */
-var createPlace = function (ad) {
+var createAdHTML = function (ad) {
   var adElement = mapPinTemplate.cloneNode(true);
 
   adElement.style = 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px';
@@ -112,22 +166,78 @@ var createPlace = function (ad) {
 };
 
 /**
+ * Создаёт и возвращает элемент списка удобств
+ * @param {string} adFeature - название удобства
+ * @return {HTMLUListElement} - элемент списка удобств
+ */
+var createAdFeatureHTML = function (adFeature) {
+  var adFeatureElement = document.createElement('li');
+  adFeatureElement.className = 'popup__feature popup__feature--' + adFeature;
+  return adFeatureElement;
+};
+
+/**
+ * Создаёт и возвращает фотографию предлагаемого жилья
+ * @param {string} adPhoto - адрес изображения предлагаемого жилья
+ * @return {HTMLImageElement} - изображение предлагаемого жилья
+ */
+var createAdPhotoesHTML = function (adPhoto) {
+  var adPhotoElement = document.createElement('img');
+  adPhotoElement.src = adPhoto;
+  adPhotoElement.className = 'popup__photo';
+  adPhotoElement.width = AD_PHOTO_WIDTH;
+  adPhotoElement.height = AD_PHOTO_HEIGHT;
+  adPhotoElement.alt = 'Фотография жилья';
+  return adPhotoElement;
+};
+
+/**
  * Создаёт и возвращает DocumentFragment из массива элементов
- * @param {object[]} baseArray - исходный массив элементов
+ * @param {*[]} baseArray - исходный массив элементов
+ * @param {function} htmlCreateFunction - функция, ответственная за создание HTML-элемента
  * @return {HTMLDivElement} baseFragment - DocumentFragment на основе массива
  */
-var createFragment = function (baseArray) {
+var createFragment = function (baseArray, htmlCreateFunction) {
   var baseFragment = document.createDocumentFragment();
   for (var i = 0; i < baseArray.length; i++) {
-    baseFragment.appendChild(createPlace(baseArray[i]));
+    baseFragment.appendChild(htmlCreateFunction(baseArray[i]));
   }
   return baseFragment;
 };
 
-activateMap('.map');
+/**
+ * Создаёт карточку с подробными параметрами предалагаемого жилья
+ * @param {ad} ad - элемент с заданным набором параметров
+ * @return {HTMLElement} - элемент <article> с заданным набором параметров
+ */
+var createCardHTML = function (ad) {
+  var adFeaturesFragment = createFragment(ad.offer.features, createAdFeatureHTML);
+  var adPhotoesFragment = createFragment(ad.offer.photos, createAdPhotoesHTML);
+
+  mapCardTemplate.querySelector('.popup__avatar').src = ad.author.avatar;
+  mapCardTemplate.querySelector('.popup__title').textContent = ad.offer.title;
+  mapCardTemplate.querySelector('.popup__text--address').textContent = ad.offer.address;
+  mapCardTemplate.querySelector('.popup__text--price').innerHTML = ad.offer.price + '&#x20bd;<span>/ночь</span>';
+  mapCardTemplate.querySelector('.popup__type').textContent = translateOfferType(ad.offer.type);
+  mapCardTemplate.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
+  mapCardTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
+  mapCardTemplate.querySelector('.popup__features').innerHTML = '';
+  mapCardTemplate.querySelector('.popup__features').appendChild(adFeaturesFragment);
+  mapCardTemplate.querySelector('.popup__description').textContent = ad.offer.description;
+  mapCardTemplate.querySelector('.popup__photos').innerHTML = '';
+  mapCardTemplate.querySelector('.popup__photos').appendChild(adPhotoesFragment);
+
+  return mapCardTemplate;
+};
+
+activateMap();
 
 var ads = createAds(AD_COUNT);
 
-var fragment = createFragment(ads);
+var fragment = createFragment(ads, createAdHTML);
 
 mapPins.appendChild(fragment);
+
+createCardHTML(ads[0]);
+
+mapFilters.before(mapCardTemplate);
