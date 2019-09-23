@@ -21,6 +21,13 @@ var GUEST_MAX_VALUE = 8;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
+var AD_OFFER_TRANSLATION = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+
 var map = document.querySelector('.map');
 var mapFilters = document.querySelector('.map__filters-container');
 
@@ -66,30 +73,6 @@ var getRandomLengthArray = function (baseArray) {
     randomArray.push(randomElement);
   }
   return randomArray;
-};
-
-/**
- * Переводит с английского тип предлагаемого жилья
- * @param {string} adOfferType - тип предлагаемого жилья на английском
- * @return {string} translate -тип предлагаемого жилья на русском
- */
-var translateOfferType = function (adOfferType) {
-  var translate;
-  switch (adOfferType) {
-    case 'palace':
-      translate = 'Дворец';
-      break;
-    case 'flat':
-      translate = 'Квартира';
-      break;
-    case 'house':
-      translate = 'Дом';
-      break;
-    case 'bungalo':
-      translate = 'Бунгало';
-      break;
-  }
-  return translate;
 };
 
 /**
@@ -147,14 +130,9 @@ var createAds = function (adsCount) {
  *              features: object[],
  *              description: string,
  *              photos: object[]
- *            }}} Ad
+ *            }}} ad
  */
 
-/**
- * Создаёт и возвращает элемент с заданным набором параметров
- * @param {ad} ad - элемент с заданным набором параметров
- * @return {HTMLDivElement} placeElement - HTML-разметка для элемента с заданным набором параметров
- */
 var createAdHTML = function (ad) {
   var adElement = mapPinTemplate.cloneNode(true);
 
@@ -165,23 +143,13 @@ var createAdHTML = function (ad) {
   return adElement;
 };
 
-/**
- * Создаёт и возвращает элемент списка удобств
- * @param {string} adFeature - название удобства
- * @return {HTMLUListElement} - элемент списка удобств
- */
 var createAdFeatureHTML = function (adFeature) {
   var adFeatureElement = document.createElement('li');
   adFeatureElement.className = 'popup__feature popup__feature--' + adFeature;
   return adFeatureElement;
 };
 
-/**
- * Создаёт и возвращает фотографию предлагаемого жилья
- * @param {string} adPhoto - адрес изображения предлагаемого жилья
- * @return {HTMLImageElement} - изображение предлагаемого жилья
- */
-var createAdPhotoesHTML = function (adPhoto) {
+var createAdPhotoHTML = function (adPhoto) {
   var adPhotoElement = document.createElement('img');
   adPhotoElement.src = adPhoto;
   adPhotoElement.className = 'popup__photo';
@@ -194,7 +162,7 @@ var createAdPhotoesHTML = function (adPhoto) {
 /**
  * Создаёт и возвращает DocumentFragment из массива элементов
  * @param {*[]} baseArray - исходный массив элементов
- * @param {function} htmlCreateFunction - функция, ответственная за создание HTML-элемента
+ * @param {callback} htmlCreateFunction - функция, ответственная за создание HTML-элемента
  * @return {HTMLDivElement} baseFragment - DocumentFragment на основе массива
  */
 var createFragment = function (baseArray, htmlCreateFunction) {
@@ -208,17 +176,17 @@ var createFragment = function (baseArray, htmlCreateFunction) {
 /**
  * Создаёт карточку с подробными параметрами предалагаемого жилья
  * @param {ad} ad - элемент с заданным набором параметров
- * @return {HTMLElement} - элемент <article> с заданным набором параметров
+ * @return {HTMLElement} - элемент с заданным набором параметров
  */
 var createCardHTML = function (ad) {
   var adFeaturesFragment = createFragment(ad.offer.features, createAdFeatureHTML);
-  var adPhotoesFragment = createFragment(ad.offer.photos, createAdPhotoesHTML);
+  var adPhotoesFragment = createFragment(ad.offer.photos, createAdPhotoHTML);
 
   mapCardTemplate.querySelector('.popup__avatar').src = ad.author.avatar;
   mapCardTemplate.querySelector('.popup__title').textContent = ad.offer.title;
   mapCardTemplate.querySelector('.popup__text--address').textContent = ad.offer.address;
   mapCardTemplate.querySelector('.popup__text--price').innerHTML = ad.offer.price + '&#x20bd;<span>/ночь</span>';
-  mapCardTemplate.querySelector('.popup__type').textContent = translateOfferType(ad.offer.type);
+  mapCardTemplate.querySelector('.popup__type').textContent = AD_OFFER_TRANSLATION[ad.offer.type];
   mapCardTemplate.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
   mapCardTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
   mapCardTemplate.querySelector('.popup__features').innerHTML = '';
