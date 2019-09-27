@@ -32,6 +32,8 @@ var MAP_WIDTH = 1200;
 var MAP_MIN_HEIGHT = 130;
 var MAP_MAX_HEIGHT = 630;
 
+var ENTER_KEYCODE = 13;
+
 var map = document.querySelector('.map');
 var mapFilter = document.querySelector('.map__filters-container');
 var mapFilterGroups = mapFilter.querySelectorAll('.map__filter');
@@ -60,6 +62,11 @@ var setMainPinCoordinates = function () {
     MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT / 2);
   }
   noticeFormAdress.value = MainPinX + ', ' + MainPinY;
+};
+
+var activatePage = function () {
+  activateMap();
+  activateNoticeForm();
 };
 
 var activateMap = function () {
@@ -286,8 +293,13 @@ window.addEventListener('load', function () {
 });
 
 mapMainPin.addEventListener('mousedown', function () {
-  activateMap();
-  activateNoticeForm();
+  activatePage();
+});
+
+mapMainPin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    activatePage();
+  }
 });
 
 mapMainPin.addEventListener('mousedown', function () {
