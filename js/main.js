@@ -54,14 +54,24 @@ var noticeFormGroups = noticeForm.querySelectorAll('fieldset');
 var noticeFormRoomNumbers = noticeForm.querySelector('#room_number');
 var noticeFormCapacities = noticeForm.querySelector('#capacity');
 
-var setMainPinCoordinates = function () {
-  var noticeFormAdress = noticeForm.querySelector('input[name=address]');
-  var MainPinX = Math.floor(mapMainPin.offsetLeft + MAIN_PIN_WIDTH / 2);
-  var MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_SPKIKE_HEIGHT);
-  if (noticeForm.classList.contains('ad-form--disabled')) {
-    MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT / 2);
+var deactivatePage = function () {
+  deactivateMap();
+  deactivateNoticeForm();
+};
+
+var deactivateMap = function () {
+  map.classList.add('map--faded');
+  for (var i = 0; i < mapFilterGroups.length; i++) {
+    mapFilterGroups[i].setAttribute('disabled', 'disabled');
   }
-  noticeFormAdress.value = MainPinX + ', ' + MainPinY;
+};
+
+var deactivateNoticeForm = function () {
+  noticeForm.classList.add('ad-form--disabled');
+  mapFilterFeaturesGroup.setAttribute('disabled', 'disabled');
+  for (var i = 0; i < noticeFormGroups.length; i++) {
+    noticeFormGroups[i].setAttribute('disabled', 'disabled');
+  }
 };
 
 var activatePage = function () {
@@ -82,6 +92,16 @@ var activateNoticeForm = function () {
   for (var i = 0; i < noticeFormGroups.length; i++) {
     noticeFormGroups[i].removeAttribute('disabled');
   }
+};
+
+var setMainPinCoordinates = function () {
+  var noticeFormAdress = noticeForm.querySelector('input[name=address]');
+  var MainPinX = Math.floor(mapMainPin.offsetLeft + MAIN_PIN_WIDTH / 2);
+  var MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_SPKIKE_HEIGHT);
+  if (noticeForm.classList.contains('ad-form--disabled')) {
+    MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT / 2);
+  }
+  noticeFormAdress.value = MainPinX + ', ' + MainPinY;
 };
 
 /**
@@ -136,9 +156,9 @@ var getRandomLengthArray = function (baseArray) {
  */
 
 /**
- * Создаёт и возращает объект (мага)
+ * Создаёт и возращает объект (место)
  * @param {number} adArrayIndex - номер элемента в создаваемом массиве функции createAds
- * @return {Ad} ad - объект (маг)
+ * @return {Ad} ad - объект (место)
  */
 var createAd = function (adArrayIndex) {
   var ad = {
@@ -169,7 +189,7 @@ var createAd = function (adArrayIndex) {
 /**
  * Создаёт и возвращает массив элементов (мест) указанной длины
  * @param {number} adCount - кол-во элементов в массиве
- * @return {object[]} ads - массив элементов (мест)
+ * @return {Ad[]} ads - массив элементов (мест)
  */
 var createAds = function (adCount) {
   var ads = [];
@@ -289,11 +309,18 @@ noticeFormCapacities.addEventListener('change', function () {
 
 window.addEventListener('load', function () {
   setMainPinCoordinates();
-  validateNoticeForm();
 });
 
 mapMainPin.addEventListener('mousedown', function () {
   activatePage();
+});
+
+mapMainPin.addEventListener('mousedown', function () {
+  setMainPinCoordinates();
+});
+
+mapMainPin.addEventListener('mousedown', function () {
+  validateNoticeForm();
 });
 
 mapMainPin.addEventListener('keydown', function (evt) {
@@ -302,9 +329,7 @@ mapMainPin.addEventListener('keydown', function (evt) {
   }
 });
 
-mapMainPin.addEventListener('mousedown', function () {
-  setMainPinCoordinates();
-});
+deactivatePage();
 
 var ads = createAds(AD_COUNT);
 
