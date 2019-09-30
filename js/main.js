@@ -54,16 +54,17 @@ var noticeFormGroups = noticeForm.querySelectorAll('fieldset');
 var noticeFormRoomNumbers = noticeForm.querySelector('#room_number');
 var noticeFormCapacities = noticeForm.querySelector('#capacity');
 
-var deactivatePage = function () {
-  deactivateMap();
-  deactivateNoticeForm();
-};
 
 var deactivateMap = function () {
   map.classList.add('map--faded');
   for (var i = 0; i < mapFilterGroups.length; i++) {
     mapFilterGroups[i].setAttribute('disabled', 'disabled');
   }
+};
+
+var deactivatePage = function () {
+  deactivateMap();
+  deactivateNoticeForm();
 };
 
 var deactivateNoticeForm = function () {
