@@ -265,6 +265,7 @@ var createCardHTML = function (ad) {
 };
 
 var validateRoomNumberNoGuests = function () {
+
   if (Number(noticeFormRoomNumbers.value) === 100 && Number(noticeFormCapacities.value) !== 0) {
     noticeFormRoomNumbers.setCustomValidity('Данное кол-во комнат предназначего не для гостей!');
   } else {
@@ -282,10 +283,12 @@ var validateCapacityNoGuests = function () {
 };
 
 var validateCapacityLimit = function () {
+
   if (Number(noticeFormRoomNumbers.value) < Number(noticeFormCapacities.value)) {
     noticeFormCapacities.setCustomValidity('Кол-во мест должно быть не больше кол-ва комнат!');
   } else {
     noticeFormCapacities.setCustomValidity('');
+    noticeFormRoomNumbers.setCustomValidity('');
   }
 };
 
