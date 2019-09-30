@@ -7,9 +7,13 @@ var AD_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'condi
 var AD_DESCRIPTIONS = ['Прекрасное место для семейного отдыха', 'Много места, чтобы устроить вечеринку!', 'Нет соседей поблизости', 'Хороший вариант для деловых поездок', 'Рядом есть супермаркет', 'Одиночное размещение не допускается', 'Есть персональный гараж', 'Допускается размещение с животными'];
 var AD_PHOTOES = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 
-var MAP_WIDTH = 1200;
-var MAP_MIN_HEIGHT = 130;
-var MAP_MAX_HEIGHT = 630;
+var AD_OFFER_TRANSLATION = {
+  palace: 'Дворец',
+  flat: 'Квартира',
+  house: 'Дом',
+  bungalo: 'Бунгало'
+};
+
 var AD_COUNT = 8;
 var AD_PHOTO_WIDTH = 45;
 var AD_PHOTO_HEIGHT = 40;
@@ -18,19 +22,24 @@ var PRICE_MAX_VALUE = 50000;
 var ROOM_MAX_VALUE = 5;
 var GUEST_MAX_VALUE = 8;
 
+var MAIN_PIN_WIDTH = 65;
+var MAIN_PIN_HEIGHT = 65;
+var MAIN_PIN_SPKIKE_HEIGHT = 22;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
 
-var AD_OFFER_TRANSLATION = {
-  palace: 'Дворец',
-  flat: 'Квартира',
-  house: 'Дом',
-  bungalo: 'Бунгало'
-};
+var MAP_WIDTH = 1200;
+var MAP_MIN_HEIGHT = 130;
+var MAP_MAX_HEIGHT = 630;
+
+var ENTER_KEYCODE = 13;
 
 var map = document.querySelector('.map');
-var mapFilters = document.querySelector('.map__filters-container');
+var mapFilter = document.querySelector('.map__filters-container');
+var mapFilterGroups = mapFilter.querySelectorAll('.map__filter');
+var mapFilterFeaturesGroup = mapFilter.querySelector('.map__features');
 
+var mapMainPin = document.querySelector('.map__pin--main');
 var mapPins = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin')
   .content
@@ -40,11 +49,60 @@ var mapCardTemplate = document.querySelector('#card')
   .content
   .querySelector('.map__card');
 
-/**
- * Активирует карту с метками
- */
+var noticeForm = document.querySelector('.ad-form');
+var noticeFormGroups = noticeForm.querySelectorAll('fieldset');
+var noticeFormRoomNumbers = noticeForm.querySelector('#room_number');
+var noticeFormCapacities = noticeForm.querySelector('#capacity');
+
+
+var deactivateMap = function () {
+  map.classList.add('map--faded');
+  for (var i = 0; i < mapFilterGroups.length; i++) {
+    mapFilterGroups[i].setAttribute('disabled', 'disabled');
+  }
+};
+
+var deactivatePage = function () {
+  deactivateMap();
+  deactivateNoticeForm();
+};
+
+var deactivateNoticeForm = function () {
+  noticeForm.classList.add('ad-form--disabled');
+  mapFilterFeaturesGroup.setAttribute('disabled', 'disabled');
+  for (var i = 0; i < noticeFormGroups.length; i++) {
+    noticeFormGroups[i].setAttribute('disabled', 'disabled');
+  }
+};
+
+var activatePage = function () {
+  activateMap();
+  activateNoticeForm();
+};
+
 var activateMap = function () {
   map.classList.remove('map--faded');
+  for (var i = 0; i < mapFilterGroups.length; i++) {
+    mapFilterGroups[i].removeAttribute('disabled');
+  }
+};
+
+var activateNoticeForm = function () {
+  noticeForm.classList.remove('ad-form--disabled');
+  mapFilterFeaturesGroup.removeAttribute('disabled');
+  for (var i = 0; i < noticeFormGroups.length; i++) {
+    noticeFormGroups[i].removeAttribute('disabled');
+  }
+};
+
+var setMainPinCoordinates = function () {
+  var noticeFormAdress = noticeForm.querySelector('input[name=address]');
+  var MainPinX = Math.floor(mapMainPin.offsetLeft + MAIN_PIN_WIDTH / 2);
+  var MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_SPKIKE_HEIGHT);
+  if (noticeForm.classList.contains('ad-form--disabled')) {
+    MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT / 2);
+  }
+  noticeFormAdress.value = MainPinX + ', ' + MainPinY;
 };
 
 /**
@@ -76,41 +134,6 @@ var getRandomLengthArray = function (baseArray) {
 };
 
 /**
- * Создаёт и возвращает массив элементов (мест) указанной длины
- * @param {number} adsCount - кол-во элементов в массиве
- * @return {object[]} ads - массив элементов (мест)
- */
-var createAds = function (adsCount) {
-  var ads = [];
-  for (var i = 0; i < adsCount; i++) {
-    var ad = {
-      author: {
-        avatar: 'img/avatars/user0' + (i + 1) + '.png'
-      },
-      location: {
-        x: getRandomValue(PIN_WIDTH, MAP_WIDTH) - PIN_WIDTH / 2,
-        y: getRandomValue(MAP_MIN_HEIGHT, MAP_MAX_HEIGHT) - PIN_HEIGHT
-      },
-    };
-    ad.offer = {
-      title: AD_TITLES[i],
-      address: String(ad.location.x) + ', ' + String(ad.location.y),
-      price: getRandomValue(PRICE_MIN_VALUE, PRICE_MAX_VALUE),
-      type: AD_TYPES[getRandomValue(0, AD_TYPES.length - 1)],
-      rooms: getRandomValue(1, ROOM_MAX_VALUE),
-      guests: getRandomValue(1, GUEST_MAX_VALUE),
-      checkin: AD_CHEKINS[getRandomValue(0, AD_CHEKINS.length - 1)],
-      checkout: AD_CHEKOUTS[getRandomValue(0, AD_CHEKOUTS.length - 1)],
-      features: getRandomLengthArray(AD_FEATURES),
-      description: AD_DESCRIPTIONS[getRandomValue(0, AD_DESCRIPTIONS.length - 1)],
-      photos: getRandomLengthArray(AD_PHOTOES)
-    };
-    ads.push(ad);
-  }
-  return ads;
-};
-
-/**
  * @typedef {{author: {
  *              avatar: string
  *            },
@@ -130,8 +153,52 @@ var createAds = function (adsCount) {
  *              features: object[],
  *              description: string,
  *              photos: object[]
- *            }}} ad
+ *            }}} Ad
  */
+
+/**
+ * Создаёт и возращает объект (место)
+ * @param {number} adArrayIndex - номер элемента в создаваемом массиве функции createAds
+ * @return {Ad} ad - объект (место)
+ */
+var createAd = function (adArrayIndex) {
+  var ad = {
+    author: {
+      avatar: 'img/avatars/user0' + (adArrayIndex + 1) + '.png'
+    },
+    location: {
+      x: getRandomValue(PIN_WIDTH, MAP_WIDTH) - PIN_WIDTH / 2,
+      y: getRandomValue(MAP_MIN_HEIGHT + PIN_HEIGHT, MAP_MAX_HEIGHT) - PIN_HEIGHT
+    },
+  };
+  ad.offer = {
+    title: AD_TITLES[adArrayIndex],
+    address: String(ad.location.x) + ', ' + String(ad.location.y),
+    price: getRandomValue(PRICE_MIN_VALUE, PRICE_MAX_VALUE),
+    type: AD_TYPES[getRandomValue(0, AD_TYPES.length - 1)],
+    rooms: getRandomValue(1, ROOM_MAX_VALUE),
+    guests: getRandomValue(1, GUEST_MAX_VALUE),
+    checkin: AD_CHEKINS[getRandomValue(0, AD_CHEKINS.length - 1)],
+    checkout: AD_CHEKOUTS[getRandomValue(0, AD_CHEKOUTS.length - 1)],
+    features: getRandomLengthArray(AD_FEATURES),
+    description: AD_DESCRIPTIONS[getRandomValue(0, AD_DESCRIPTIONS.length - 1)],
+    photos: getRandomLengthArray(AD_PHOTOES)
+  };
+  return ad;
+};
+
+/**
+ * Создаёт и возвращает массив элементов (мест) указанной длины
+ * @param {number} adCount - кол-во элементов в массиве
+ * @return {Ad[]} ads - массив элементов (мест)
+ */
+var createAds = function (adCount) {
+  var ads = [];
+  for (var i = 0; i < adCount; i++) {
+    ads.push(createAd(i));
+  }
+  return ads;
+};
 
 var createAdHTML = function (ad) {
   var adElement = mapPinTemplate.cloneNode(true);
@@ -175,7 +242,7 @@ var createFragment = function (baseArray, htmlCreateFunction) {
 
 /**
  * Создаёт карточку с подробными параметрами предалагаемого жилья
- * @param {ad} ad - элемент с заданным набором параметров
+ * @param {Ad} ad - элемент с заданным набором параметров
  * @return {HTMLElement} - элемент с заданным набором параметров
  */
 var createCardHTML = function (ad) {
@@ -198,7 +265,75 @@ var createCardHTML = function (ad) {
   return mapCardTemplate;
 };
 
-activateMap();
+var validateRoomNumberNoGuests = function () {
+
+  if (Number(noticeFormRoomNumbers.value) === 100 && Number(noticeFormCapacities.value) !== 0) {
+    noticeFormRoomNumbers.setCustomValidity('Данное кол-во комнат предназначего не для гостей!');
+  } else {
+    noticeFormRoomNumbers.setCustomValidity('');
+  }
+};
+
+var validateCapacityNoGuests = function () {
+
+  if (Number(noticeFormCapacities.value) === 0 && Number(noticeFormRoomNumbers.value) !== 100) {
+    noticeFormCapacities.setCustomValidity('Данный параметр доступен только для 100 комнат');
+  } else {
+    noticeFormCapacities.setCustomValidity('');
+  }
+};
+
+var validateCapacityLimit = function () {
+
+  if (Number(noticeFormRoomNumbers.value) < Number(noticeFormCapacities.value)) {
+    noticeFormCapacities.setCustomValidity('Кол-во мест должно быть не больше кол-ва комнат!');
+  } else {
+    noticeFormCapacities.setCustomValidity('');
+    noticeFormRoomNumbers.setCustomValidity('');
+  }
+};
+
+var validateNoticeForm = function () {
+
+  if (Number(noticeFormRoomNumbers.value) === 100 || Number(noticeFormCapacities.value) === 0) {
+    validateCapacityNoGuests();
+    validateRoomNumberNoGuests();
+  } else {
+    validateCapacityLimit();
+  }
+};
+
+noticeFormRoomNumbers.addEventListener('change', function () {
+  validateNoticeForm();
+});
+
+noticeFormCapacities.addEventListener('change', function () {
+  validateNoticeForm();
+});
+
+window.addEventListener('load', function () {
+  setMainPinCoordinates();
+});
+
+mapMainPin.addEventListener('mousedown', function () {
+  activatePage();
+});
+
+mapMainPin.addEventListener('mousedown', function () {
+  setMainPinCoordinates();
+});
+
+mapMainPin.addEventListener('mousedown', function () {
+  validateNoticeForm();
+});
+
+mapMainPin.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    activatePage();
+  }
+});
+
+deactivatePage();
 
 var ads = createAds(AD_COUNT);
 
@@ -208,4 +343,4 @@ mapPins.appendChild(fragment);
 
 createCardHTML(ads[0]);
 
-mapFilters.before(mapCardTemplate);
+mapFilter.before(mapCardTemplate);
