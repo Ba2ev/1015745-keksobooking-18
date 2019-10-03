@@ -24,7 +24,7 @@ var GUEST_MAX_VALUE = 8;
 
 var MAIN_PIN_WIDTH = 65;
 var MAIN_PIN_HEIGHT = 65;
-var MAIN_PIN_SPKIKE_HEIGHT = 22;
+var MAIN_PIN_SPIKE_HEIGHT = 22;
 
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
@@ -36,7 +36,6 @@ var FLAT_MIN_PRICE = 1000;
 var HOUSE_MIN_PRICE = 5000;
 var PALACE_MIN_PRICE = 10000;
 
-var ENTER_KEYCODE = 13;
 var ESC_KEYCODE = 27;
 
 var map = document.querySelector('.map');
@@ -107,12 +106,17 @@ var activateNoticeForm = function () {
 };
 
 var setMainPinCoordinates = function () {
-  var MainPinX = Math.floor(mapMainPin.offsetLeft + MAIN_PIN_WIDTH / 2);
-  var MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT + MAIN_PIN_SPKIKE_HEIGHT);
+  var mainPinX = mapMainPin.style.left;
+  var mainPinY = mapMainPin.style.top;
+  var mainPinXValue = mainPinX.substr(0, mainPinX.length - 2);
+  var mainPinYValue = mainPinY.substr(0, mainPinY.length - 2);
+  var mainPinSpikeX = Math.floor(Number(mainPinXValue) + MAIN_PIN_WIDTH / 2);
+  var mainPinSpikeY = Math.floor(Number(mainPinYValue) + MAIN_PIN_HEIGHT + MAIN_PIN_SPIKE_HEIGHT);
+
   if (noticeForm.classList.contains('ad-form--disabled')) {
-    MainPinY = Math.floor(mapMainPin.offsetTop + MAIN_PIN_HEIGHT / 2);
+    mainPinSpikeY = Math.floor(mainPinYValue + MAIN_PIN_HEIGHT / 2);
   }
-  noticeFormAdress.value = MainPinX + ', ' + MainPinY;
+  noticeFormAdress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
 };
 
 /**
@@ -305,6 +309,7 @@ var dragDrobMainPin = function (evt) {
     };
 
     mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
+
     mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
 
     setMainPinCoordinates();
@@ -362,40 +367,37 @@ var synchronizeElementsValues = function (donorElement, acceptorElement) {
   acceptorElement.value = donorValue;
 };
 
-var onAdCartEscPress = function (evt) {
+var onAdCardEscPress = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
-    closeAdCart();
+    closeAdCard();
   }
 };
 
-var openAdCart = function () {
+var openAdCard = function () {
   mapCardTemplate.classList.remove('hidden');
-  document.addEventListener('keydown', onAdCartEscPress);
+  document.addEventListener('keydown', onAdCardEscPress);
 };
 
-var closeAdCart = function () {
+var closeAdCard = function () {
   mapCardTemplate.classList.add('hidden');
-  document.removeEventListener('keydown', onAdCartEscPress);
-};
-
-var onMainPinEnterPress = function (evt) {
-  if (evt.keyCode === ENTER_KEYCODE) {
-    activatePage();
-  }
+  document.removeEventListener('keydown', onAdCardEscPress);
 };
 
 var onPinClick = function (evt) {
-  var target = evt.target.closest('.map__pin');
+  var target = evt.target.closest('.map__pin:not(.map__pin--main)');
 
-  if (!target.classList.contains('map__pin--main')) {
-    var mapInnerPins = [];
-    for (var i = 0; i < mapPins.children.length; i++) {
-      mapInnerPins.push(mapPins.children[i]);
+  if (target) {
+    var adPins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+    var mapAdPins = [];
+
+    for (var i = 0; i < adPins.length; i++) {
+      mapAdPins.push(adPins[i]);
     }
-    var currentIndex = mapInnerPins.indexOf(target) - 2;
+
+    var currentIndex = mapAdPins.indexOf(target);
     createCardHTML(ads[currentIndex]);
     mapFilter.before(mapCardTemplate);
-    openAdCart();
+    openAdCard();
   }
 };
 
@@ -406,13 +408,17 @@ var validateMainPinCoordinates = function () {
 
   if (mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < PIN_TOP_POSITION_LIMIT || mainPinY > PIN_BOTTOM_POSITION_LIMIT) {
     noticeFormAdress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + PIN_TOP_POSITION_LIMIT + ' <= Y <= ' + PIN_BOTTOM_POSITION_LIMIT);
+  } else {
+    noticeFormAdress.setCustomValidity('');
   }
 };
 
 var validateCapacityNoGuests = function () {
 
-  if (Number(noticeFormRoomNumbers.value) === 100 && Number(noticeFormCapacities.value) !== 0) {
-    noticeFormCapacities.setCustomValidity('Данный параметр доступен не для гостей');
+  if (Number(noticeFormCapacities.value) === 0 && Number(noticeFormRoomNumbers.value) !== 100) {
+    noticeFormCapacities.setCustomValidity('Данный параметр доступен только для 100 комнат');
+  } else if (Number(noticeFormCapacities.value) !== 0 && Number(noticeFormRoomNumbers.value) === 100) {
+    noticeFormCapacities.setCustomValidity('Данное кол-во комнат доступно не для гостей');
   } else {
     noticeFormCapacities.setCustomValidity('');
   }
@@ -420,7 +426,7 @@ var validateCapacityNoGuests = function () {
 
 var validateCapacityLimit = function () {
 
-  if (Number(noticeFormRoomNumbers.value) < Number(noticeFormCapacities.value)) {
+  if (Number(noticeFormCapacities.value) > Number(noticeFormRoomNumbers.value)) {
     noticeFormCapacities.setCustomValidity('Кол-во мест должно быть не больше кол-ва комнат!');
   } else {
     noticeFormCapacities.setCustomValidity('');
@@ -428,11 +434,9 @@ var validateCapacityLimit = function () {
 };
 
 var validateNoticeForm = function () {
-
-  if (Number(noticeFormRoomNumbers.value) === 100 || Number(noticeFormCapacities.value) === 0) {
+  validateCapacityLimit();
+  if (Number(noticeFormCapacities.value) === 0 || Number(noticeFormRoomNumbers.value) === 100) {
     validateCapacityNoGuests();
-  } else {
-    validateCapacityLimit();
   }
 };
 
@@ -454,17 +458,11 @@ mapMainPin.addEventListener('mousedown', function () {
 
 mapMainPin.addEventListener('mousedown', setMainPinCoordinates);
 
-mapMainPin.addEventListener('keydown', function (evt) {
-  if (map.classList.contains('map--faded')) {
-    onMainPinEnterPress(evt);
-  }
-});
-
 mapPins.addEventListener('click', function (evt) {
   onPinClick(evt);
 });
 
-mapCardTemplateClose.addEventListener('click', closeAdCart);
+mapCardTemplateClose.addEventListener('click', closeAdCard);
 
 noticeFormAdress.addEventListener('keydown', function () {
   noticeFormAdress.readOnly = true;
@@ -477,6 +475,8 @@ noticeFormAdress.addEventListener('blur', function () {
 noticeFormPlaceType.addEventListener('change', setMinPriceForPlaceType);
 
 noticeFormRoomNumbers.addEventListener('change', validateNoticeForm);
+
+noticeFormCapacities.addEventListener('change', validateNoticeForm);
 
 noticeFormTimeIn.addEventListener('change', function () {
   synchronizeElementsValues(noticeFormTimeIn, noticeFormTimeOut);
