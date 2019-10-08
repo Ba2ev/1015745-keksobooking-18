@@ -1,43 +1,4 @@
 'use strict';
-var AD_TITLES = ['Небольшое жильё', 'Моё пространство', 'Просторное жильё', 'Комфортное место', 'Жильё возле метро', 'Ночлег для пушественников', 'Тихое место', 'Жилье в романском стиле'];
-var AD_TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var AD_CHEKINS = ['12:00', '13:00', '14:00'];
-var AD_CHEKOUTS = ['12:00', '13:00', '14:00'];
-var AD_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var AD_DESCRIPTIONS = ['Прекрасное место для семейного отдыха', 'Много места, чтобы устроить вечеринку!', 'Нет соседей поблизости', 'Хороший вариант для деловых поездок', 'Рядом есть супермаркет', 'Одиночное размещение не допускается', 'Есть персональный гараж', 'Допускается размещение с животными'];
-var AD_PHOTOES = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-
-var AD_OFFER_TRANSLATION = {
-  palace: 'Дворец',
-  flat: 'Квартира',
-  house: 'Дом',
-  bungalo: 'Бунгало'
-};
-
-var AD_COUNT = 8;
-var AD_PHOTO_WIDTH = 45;
-var AD_PHOTO_HEIGHT = 40;
-var PRICE_MIN_VALUE = 1000;
-var PRICE_MAX_VALUE = 50000;
-var ROOM_MAX_VALUE = 5;
-var GUEST_MAX_VALUE = 8;
-
-var MAIN_PIN_WIDTH = 65;
-var MAIN_PIN_HEIGHT = 65;
-var MAIN_PIN_SPIKE_HEIGHT = 22;
-
-var PIN_WIDTH = 50;
-var PIN_HEIGHT = 70;
-var PIN_TOP_POSITION_LIMIT = 130;
-var PIN_BOTTOM_POSITION_LIMIT = 630;
-
-var BUNGALO_MIN_PRICE = 0;
-var FLAT_MIN_PRICE = 1000;
-var HOUSE_MIN_PRICE = 5000;
-var PALACE_MIN_PRICE = 10000;
-
-var ESC_KEYCODE = 27;
-
 var map = document.querySelector('.map');
 var mapFilter = document.querySelector('.map__filters-container');
 var mapFilterGroups = mapFilter.querySelectorAll('.map__filter');
@@ -110,31 +71,21 @@ var setMainPinCoordinates = function () {
   var mainPinY = mapMainPin.style.top;
   var mainPinXValue = mainPinX.substr(0, mainPinX.length - 2);
   var mainPinYValue = mainPinY.substr(0, mainPinY.length - 2);
-  var mainPinSpikeX = Math.floor(Number(mainPinXValue) + MAIN_PIN_WIDTH / 2);
-  var mainPinSpikeY = Math.floor(Number(mainPinYValue) + MAIN_PIN_HEIGHT + MAIN_PIN_SPIKE_HEIGHT);
+  var mainPinSpikeX = Math.floor(Number(mainPinXValue) + window.params.mainPin.mainPinWidth / 2);
+  var mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.mainPinHeight + window.params.mainPin.mainPinSpikeHeight);
 
   if (noticeForm.classList.contains('ad-form--disabled')) {
-    mainPinSpikeY = Math.floor(mainPinYValue + MAIN_PIN_HEIGHT / 2);
+    mainPinSpikeY = Math.floor(mainPinYValue + window.params.mainPin.mainPinHeight / 2);
   }
   noticeFormAdress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
 };
 
-/**
- * Возвращает случайное целое число в диапазоне
- * @param {number} minValue - минимальное значение
- * @param {number} maxValue - максимальное значение
- * @return {number} rand - случайное целое число из диапазона
- */
+
 var getRandomValue = function (minValue, maxValue) {
   var rand = Math.floor(minValue + Math.random() * (maxValue + 1 - minValue));
   return rand;
 };
 
-/**
- * Создаёт и возвращает массив элементов случайной длины из заданного массива
- * @param {*[]} baseArray - заданный массив
- * @return {*[]} randomArray - массив случайной длины из заданного массива
- */
 var getRandomLengthArray = function (baseArray) {
   var randomArray = [];
   var randomCount = getRandomValue(1, baseArray.length);
@@ -145,6 +96,10 @@ var getRandomLengthArray = function (baseArray) {
     randomArray.push(randomElement);
   }
   return randomArray;
+};
+
+var getArrayRandomElement = function (array) {
+  return array[Math.floor(Math.random() * array.length)];
 };
 
 /**
@@ -181,22 +136,22 @@ var createAd = function (adArrayIndex) {
       avatar: 'img/avatars/user0' + (adArrayIndex + 1) + '.png'
     },
     location: {
-      x: getRandomValue(PIN_WIDTH, map.offsetWidth) - PIN_WIDTH / 2,
-      y: getRandomValue(PIN_TOP_POSITION_LIMIT + PIN_HEIGHT, PIN_BOTTOM_POSITION_LIMIT) - PIN_HEIGHT
+      x: getRandomValue(window.params.pin.pinWidth, map.offsetWidth) - window.params.pin.pinWidth / 2,
+      y: getRandomValue(window.params.pin.pinPositionTopLimit + window.params.pin.pinHeight, window.params.pin.pinPositionBottomLimit) - window.params.pin.pinHeight
     },
   };
   ad.offer = {
-    title: AD_TITLES[adArrayIndex],
+    title: window.data.titles[adArrayIndex],
     address: String(ad.location.x) + ', ' + String(ad.location.y),
-    price: getRandomValue(PRICE_MIN_VALUE, PRICE_MAX_VALUE),
-    type: AD_TYPES[getRandomValue(0, AD_TYPES.length - 1)],
-    rooms: getRandomValue(1, ROOM_MAX_VALUE),
-    guests: getRandomValue(1, GUEST_MAX_VALUE),
-    checkin: AD_CHEKINS[getRandomValue(0, AD_CHEKINS.length - 1)],
-    checkout: AD_CHEKOUTS[getRandomValue(0, AD_CHEKOUTS.length - 1)],
-    features: getRandomLengthArray(AD_FEATURES),
-    description: AD_DESCRIPTIONS[getRandomValue(0, AD_DESCRIPTIONS.length - 1)],
-    photos: getRandomLengthArray(AD_PHOTOES)
+    price: getRandomValue(window.params.form.priceMinValue, window.params.form.priceMaxValue),
+    type: getArrayRandomElement(window.data.typesEN),
+    rooms: getRandomValue(1, window.params.form.roomsMaxValue),
+    guests: getRandomValue(1, window.params.form.guestsMaxValue),
+    checkin: getArrayRandomElement(window.data.checkins),
+    checkout: getArrayRandomElement(window.data.checkouts),
+    features: getRandomLengthArray(window.data.features),
+    description: getArrayRandomElement(window.data.descriptions),
+    photos: getRandomLengthArray(window.data.photoes)
   };
   return ad;
 };
@@ -234,8 +189,8 @@ var createAdPhotoHTML = function (adPhoto) {
   var adPhotoElement = document.createElement('img');
   adPhotoElement.src = adPhoto;
   adPhotoElement.className = 'popup__photo';
-  adPhotoElement.width = AD_PHOTO_WIDTH;
-  adPhotoElement.height = AD_PHOTO_HEIGHT;
+  adPhotoElement.width = window.params.ad.adPhotoWidth;
+  adPhotoElement.height = window.params.ad.adPhotoHeight;
   adPhotoElement.alt = 'Фотография жилья';
   return adPhotoElement;
 };
@@ -267,7 +222,7 @@ var createCardHTML = function (ad) {
   mapCardTemplate.querySelector('.popup__title').textContent = ad.offer.title;
   mapCardTemplate.querySelector('.popup__text--address').textContent = ad.offer.address;
   mapCardTemplate.querySelector('.popup__text--price').innerHTML = ad.offer.price + '&#x20bd;<span>/ночь</span>';
-  mapCardTemplate.querySelector('.popup__type').textContent = AD_OFFER_TRANSLATION[ad.offer.type];
+  mapCardTemplate.querySelector('.popup__type').textContent = window.data.typesRU[window.data.typesEN.indexOf(ad.offer.type)];
   mapCardTemplate.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
   mapCardTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
   mapCardTemplate.querySelector('.popup__features').innerHTML = '';
@@ -339,16 +294,16 @@ var dragDrobMainPin = function (evt) {
 var setMinPriceForPlaceType = function () {
   switch (noticeFormPlaceType.value) {
     case 'flat':
-      noticeFormPricePerNight.min = FLAT_MIN_PRICE;
+      noticeFormPricePerNight.min = window.params.form.flatMinPrice;
       break;
     case 'house':
-      noticeFormPricePerNight.min = HOUSE_MIN_PRICE;
+      noticeFormPricePerNight.min = window.params.form.houseMinPrice;
       break;
     case 'palace':
-      noticeFormPricePerNight.min = PALACE_MIN_PRICE;
+      noticeFormPricePerNight.min = window.params.form.palaceMinPrice;
       break;
     case 'bungalo':
-      noticeFormPricePerNight.min = BUNGALO_MIN_PRICE;
+      noticeFormPricePerNight.min = window.params.form.bungaloMinPrice;
       break;
     default:
       noticeFormPricePerNight.min = 0;
@@ -368,7 +323,7 @@ var synchronizeElementsValues = function (donorElement, acceptorElement) {
 };
 
 var onAdCardEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
+  if (evt.keyCode === window.params.keyCode.esc) {
     closeAdCard();
   }
 };
@@ -406,8 +361,8 @@ var validateMainPinCoordinates = function () {
   var mainPinX = mainPinCoordinates[0];
   var mainPinY = mainPinCoordinates[1];
 
-  if (mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < PIN_TOP_POSITION_LIMIT || mainPinY > PIN_BOTTOM_POSITION_LIMIT) {
-    noticeFormAdress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + PIN_TOP_POSITION_LIMIT + ' <= Y <= ' + PIN_BOTTOM_POSITION_LIMIT);
+  if (mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < window.params.pin.pinPositionTopLimit || mainPinY > window.params.pin.pinPositionBottomLimit) {
+    noticeFormAdress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + window.params.pin.pinPositionTopLimit + ' <= Y <= ' + window.params.pin.pinPositionBottomLimit);
   } else {
     noticeFormAdress.setCustomValidity('');
   }
@@ -440,7 +395,7 @@ var validateNoticeForm = function () {
   }
 };
 
-var ads = createAds(AD_COUNT);
+var ads = createAds(window.params.ad.adCount);
 
 window.addEventListener('load', setMainPinCoordinates);
 
