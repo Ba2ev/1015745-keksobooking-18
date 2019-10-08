@@ -1,4 +1,5 @@
 'use strict';
+
 var map = document.querySelector('.map');
 var mapFilter = document.querySelector('.map__filters-container');
 var mapFilterGroups = mapFilter.querySelectorAll('.map__filter');
@@ -80,28 +81,6 @@ var setMainPinCoordinates = function () {
   noticeFormAdress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
 };
 
-
-var getRandomValue = function (minValue, maxValue) {
-  var rand = Math.floor(minValue + Math.random() * (maxValue + 1 - minValue));
-  return rand;
-};
-
-var getRandomLengthArray = function (baseArray) {
-  var randomArray = [];
-  var randomCount = getRandomValue(1, baseArray.length);
-  var baseArrayCopy = baseArray.slice();
-  for (var i = 0; i < randomCount; i++) {
-    var randomElement = baseArrayCopy[getRandomValue(0, baseArrayCopy.length - 1)];
-    baseArrayCopy.splice(baseArrayCopy.indexOf(randomElement), 1);
-    randomArray.push(randomElement);
-  }
-  return randomArray;
-};
-
-var getArrayRandomElement = function (array) {
-  return array[Math.floor(Math.random() * array.length)];
-};
-
 /**
  * @typedef {{author: {
  *              avatar: string
@@ -136,22 +115,22 @@ var createAd = function (adArrayIndex) {
       avatar: 'img/avatars/user0' + (adArrayIndex + 1) + '.png'
     },
     location: {
-      x: getRandomValue(window.params.pin.pinWidth, map.offsetWidth) - window.params.pin.pinWidth / 2,
-      y: getRandomValue(window.params.pin.pinPositionTopLimit + window.params.pin.pinHeight, window.params.pin.pinPositionBottomLimit) - window.params.pin.pinHeight
+      x: window.util.getRandomValue(window.params.pin.pinWidth, map.offsetWidth) - window.params.pin.pinWidth / 2,
+      y: window.util.getRandomValue(window.params.pin.pinPositionTopLimit + window.params.pin.pinHeight, window.params.pin.pinPositionBottomLimit) - window.params.pin.pinHeight
     },
   };
   ad.offer = {
     title: window.data.titles[adArrayIndex],
     address: String(ad.location.x) + ', ' + String(ad.location.y),
-    price: getRandomValue(window.params.form.priceMinValue, window.params.form.priceMaxValue),
-    type: getArrayRandomElement(window.data.typesEN),
-    rooms: getRandomValue(1, window.params.form.roomsMaxValue),
-    guests: getRandomValue(1, window.params.form.guestsMaxValue),
-    checkin: getArrayRandomElement(window.data.checkins),
-    checkout: getArrayRandomElement(window.data.checkouts),
-    features: getRandomLengthArray(window.data.features),
-    description: getArrayRandomElement(window.data.descriptions),
-    photos: getRandomLengthArray(window.data.photoes)
+    price: window.util.getRandomValue(window.params.form.priceMinValue, window.params.form.priceMaxValue),
+    type: window.util.getArrayRandomElement(window.data.typesEN),
+    rooms: window.util.getRandomValue(1, window.params.form.roomsMaxValue),
+    guests: window.util.getRandomValue(1, window.params.form.guestsMaxValue),
+    checkin: window.util.getArrayRandomElement(window.data.checkins),
+    checkout: window.util.getArrayRandomElement(window.data.checkouts),
+    features: window.util.getRandomLengthArray(window.data.features),
+    description: window.util.getArrayRandomElement(window.data.descriptions),
+    photos: window.util.getRandomLengthArray(window.data.photoes)
   };
   return ad;
 };
@@ -196,27 +175,13 @@ var createAdPhotoHTML = function (adPhoto) {
 };
 
 /**
- * Создаёт и возвращает DocumentFragment из массива элементов
- * @param {*[]} baseArray - исходный массив элементов
- * @param {callback} htmlCreateFunction - функция, ответственная за создание HTML-элемента
- * @return {HTMLDivElement} baseFragment - DocumentFragment на основе массива
- */
-var createFragment = function (baseArray, htmlCreateFunction) {
-  var baseFragment = document.createDocumentFragment();
-  for (var i = 0; i < baseArray.length; i++) {
-    baseFragment.appendChild(htmlCreateFunction(baseArray[i]));
-  }
-  return baseFragment;
-};
-
-/**
  * Создаёт карточку с подробными параметрами предалагаемого жилья
  * @param {Ad} ad - элемент с заданным набором параметров
  * @return {HTMLElement} - элемент с заданным набором параметров
  */
 var createCardHTML = function (ad) {
-  var adFeaturesFragment = createFragment(ad.offer.features, createAdFeatureHTML);
-  var adPhotoesFragment = createFragment(ad.offer.photos, createAdPhotoHTML);
+  var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHTML);
+  var adPhotoesFragment = window.util.createFragment(ad.offer.photos, createAdPhotoHTML);
 
   mapCardTemplate.querySelector('.popup__avatar').src = ad.author.avatar;
   mapCardTemplate.querySelector('.popup__title').textContent = ad.offer.title;
@@ -235,7 +200,7 @@ var createCardHTML = function (ad) {
 };
 
 var renderPins = function () {
-  var fragment = createFragment(ads, createAdHTML);
+  var fragment = window.util.createFragment(ads, createAdHTML);
   mapPins.appendChild(fragment);
 };
 
@@ -310,16 +275,6 @@ var setMinPriceForPlaceType = function () {
       break;
   }
   noticeFormPricePerNight.placeholder = noticeFormPricePerNight.min;
-};
-
-/**
- * Синхронизирует значение свойства value у двух элементов формы
- * @param {HTMLElement} donorElement - элемент у которого берётся значение свойства value
- * @param {HTMLElement} acceptorElement - элемент которому присваивается значение свойства value donorElement
- */
-var synchronizeElementsValues = function (donorElement, acceptorElement) {
-  var donorValue = donorElement.value;
-  acceptorElement.value = donorValue;
 };
 
 var onAdCardEscPress = function (evt) {
@@ -434,11 +389,11 @@ noticeFormRoomNumbers.addEventListener('change', validateNoticeForm);
 noticeFormCapacities.addEventListener('change', validateNoticeForm);
 
 noticeFormTimeIn.addEventListener('change', function () {
-  synchronizeElementsValues(noticeFormTimeIn, noticeFormTimeOut);
+  window.util.synchronizeElementsValues(noticeFormTimeIn, noticeFormTimeOut);
 });
 
 noticeFormTimeOut.addEventListener('change', function () {
-  synchronizeElementsValues(noticeFormTimeOut, noticeFormTimeIn);
+  window.util.synchronizeElementsValues(noticeFormTimeOut, noticeFormTimeIn);
 });
 
 deactivatePage();
