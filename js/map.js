@@ -151,7 +151,7 @@
       }
 
       var currentIndex = mapAdPins.indexOf(target);
-      window.card(window.data[currentIndex]);
+      window.createCard(window.data[currentIndex]);
       mapFilter.before(mapCardTemplate);
       openAdCard();
     }

@@ -20,7 +20,7 @@
     return adPhotoElement;
   };
 
-  window.card = function (ad) {
+  window.createCard = function (ad) {
     var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHTML);
     var adPhotoesFragment = window.util.createFragment(ad.offer.photos, createAdPhotoHTML);
 
