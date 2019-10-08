@@ -20,12 +20,7 @@
     return adPhotoElement;
   };
 
-  /**
-   * Создаёт карточку с подробными параметрами предалагаемого жилья
-   * @param {Ad} ad - элемент с заданным набором параметров
-   * @return {HTMLElement} - элемент с заданным набором параметров
-   */
-  window.createCardHTML = function (ad) {
+  window.card = function (ad) {
     var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHTML);
     var adPhotoesFragment = window.util.createFragment(ad.offer.photos, createAdPhotoHTML);
 
@@ -33,7 +28,7 @@
     mapCardTemplate.querySelector('.popup__title').textContent = ad.offer.title;
     mapCardTemplate.querySelector('.popup__text--address').textContent = ad.offer.address;
     mapCardTemplate.querySelector('.popup__text--price').innerHTML = ad.offer.price + '&#x20bd;<span>/ночь</span>';
-    mapCardTemplate.querySelector('.popup__type').textContent = window.data.typesRU[window.data.typesEN.indexOf(ad.offer.type)];
+    mapCardTemplate.querySelector('.popup__type').textContent = window.params.mocs.typesRU[window.params.mocs.typesEN.indexOf(ad.offer.type)];
     mapCardTemplate.querySelector('.popup__text--capacity').textContent = ad.offer.rooms + ' комнаты для ' + ad.offer.guests + ' гостей';
     mapCardTemplate.querySelector('.popup__text--time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
     mapCardTemplate.querySelector('.popup__features').innerHTML = '';
