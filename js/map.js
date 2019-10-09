@@ -95,12 +95,16 @@
         y: moveEvt.clientY
       };
 
-      mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
+      var mainPinHalfWidth = Math.floor(window.params.mainPin.mainPinWidth / 2);
+      var mainPinHeight = window.params.mainPin.mainPinHeight + window.params.mainPin.mainPinSpikeHeight;
+      if (((mapMainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mapMainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth)) {
+        if (((mapMainPin.offsetTop - shift.y) >= window.params.pin.pinPositionTopLimit - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.pinPositionBottomLimit - mainPinHeight)) {
+          mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
+          mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
 
-      mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
-
-      setMainPinCoordinates();
-
+          setMainPinCoordinates();
+        }
+      }
     };
 
     var onMouseUp = function (upEvt) {
@@ -151,7 +155,7 @@
       }
 
       var currentIndex = mapAdPins.indexOf(target);
-      window.card(window.data[currentIndex]);
+      window.createCard(window.data[currentIndex]);
       mapFilter.before(mapCardTemplate);
       openAdCard();
     }
