@@ -8,11 +8,6 @@
   var mapMainPin = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
 
-  var mapCardTemplate = document.querySelector('#card')
-    .content
-    .querySelector('.map__card');
-  var mapCardTemplateClose = mapCardTemplate.querySelector('.popup__close');
-
   var deactivatePage = function () {
     deactivateMap();
     window.form.deactivateNoticeForm();
@@ -21,7 +16,6 @@
   var activatePage = function () {
     activateMap();
     window.form.activateNoticeForm();
-    window.createData();
     window.renderPins();
   };
 
@@ -127,23 +121,8 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  var onAdCardEscPress = function (evt) {
-    if (evt.keyCode === window.params.keyCode.esc) {
-      closeAdCard();
-    }
-  };
-
-  var openAdCard = function () {
-    mapCardTemplate.classList.remove('hidden');
-    document.addEventListener('keydown', onAdCardEscPress);
-  };
-
-  var closeAdCard = function () {
-    mapCardTemplate.classList.add('hidden');
-    document.removeEventListener('keydown', onAdCardEscPress);
-  };
-
   var onPinClick = function (evt) {
+    var mapCard = document.querySelector('.map__card.popup');
     var target = evt.target.closest('.map__pin:not(.map__pin--main)');
 
     if (target) {
@@ -156,9 +135,32 @@
 
       var currentIndex = mapAdPins.indexOf(target);
       window.createCard(window.data[currentIndex]);
-      mapFilter.before(mapCardTemplate);
+
+      if (mapCard) {
+        closeAdCard();
+      }
       openAdCard();
     }
+  };
+
+  var onAdCardEscPress = function (evt) {
+    if (evt.keyCode === window.params.keyCode.esc) {
+      closeAdCard();
+    }
+  };
+
+  var openAdCard = function () {
+    var mapCard = document.querySelector('.map__card.popup');
+    var mapCardClose = mapCard.querySelector('.popup__close');
+    mapCard.classList.remove('hidden');
+    mapCardClose.addEventListener('click', closeAdCard);
+    document.addEventListener('keydown', onAdCardEscPress);
+  };
+
+  var closeAdCard = function () {
+    var mapCard = document.querySelector('.map__card.popup');
+    document.removeEventListener('keydown', onAdCardEscPress);
+    mapCard.remove();
   };
 
   mapMainPin.addEventListener('load', setMainPinCoordinates);
@@ -178,8 +180,6 @@
   mapPins.addEventListener('click', function (evt) {
     onPinClick(evt);
   });
-
-  mapCardTemplateClose.addEventListener('click', closeAdCard);
 
   deactivatePage();
 })();
