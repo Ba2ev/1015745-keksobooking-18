@@ -50,6 +50,6 @@
     getRandomLengthArray: getRandomLengthArray,
     getArrayRandomElement: getArrayRandomElement,
     synchronizeElementsValues: synchronizeElementsValues,
-    createFragment: createFragment
+    createFragment: createFragment,
   };
 })();

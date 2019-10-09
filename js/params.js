@@ -1,15 +1,11 @@
 'use strict';
 (function () {
   window.params = {
-    mocs: {
-      titles: ['Небольшое жильё', 'Моё пространство', 'Просторное жильё', 'Комфортное место', 'Жильё возле метро', 'Ночлег для пушественников', 'Тихое место', 'Жилье в романском стиле'],
-      typesEN: ['palace', 'flat', 'house', 'bungalo'],
-      typesRU: ['Дворец', 'Квартира', 'Дом', 'Бунгало'],
-      checkins: ['12:00', '13:00', '14:00'],
-      checkouts: ['12:00', '13:00', '14:00'],
-      features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
-      descriptions: ['Прекрасное место для семейного отдыха', 'Много места, чтобы устроить вечеринку!', 'Нет соседей поблизости', 'Хороший вариант для деловых поездок', 'Рядом есть супермаркет', 'Одиночное размещение не допускается', 'Есть персональный гараж', 'Допускается размещение с животными'],
-      photoes: ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg']
+    translation: {
+      palace: 'Дворец',
+      flat: 'Квартира',
+      house: 'Дом',
+      bungalo: 'Бунгало'
     },
     ad: {
       adCount: 8,
@@ -39,6 +35,12 @@
     },
     keyCode: {
       esc: 27
+    },
+    errorCode: {
+      404: 'Запрашиваемая страница не найдена'
+    },
+    server: {
+      url: 'https://js.dump.academy/keksobooking/data'
     }
   };
 })();
