@@ -10,6 +10,7 @@
 
   var deactivatePage = function () {
     deactivateMap();
+    window.form.setMinPriceForPlaceType();
     window.form.deactivateNoticeForm();
   };
 

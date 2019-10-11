@@ -47,12 +47,16 @@
       });
 
       xhr.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+        onError('Запрос не успел выполниться за ' + xhr.timeout / 1000 + 'с');
       });
 
-      xhr.timeout = 5000; // 5s
+      xhr.timeout = 10000; // 5s
 
       xhr.open('POST', window.params.server.url);
+
+      // setInterval(function () {
+      //   console.log(data, xhr.readyState, xhr.status, xhr.statusText, xhr.response);
+      // }, 5000);
       xhr.send(data);
     }
   };

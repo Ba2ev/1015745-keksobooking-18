@@ -74,6 +74,11 @@
 
   noticeForm.addEventListener('load', setMinPriceForPlaceType);
 
+  noticeForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(noticeForm), window.showSuccess, window.showError);
+    evt.preventDefault();
+  });
+
   noticeFormAdress.addEventListener('keydown', function () {
     noticeFormAdress.readOnly = true;
   });
@@ -98,6 +103,7 @@
 
   window.form = {
     activateNoticeForm: activateNoticeForm,
-    deactivateNoticeForm: deactivateNoticeForm
+    deactivateNoticeForm: deactivateNoticeForm,
+    setMinPriceForPlaceType: setMinPriceForPlaceType
   };
 })();
