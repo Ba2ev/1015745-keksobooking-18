@@ -37,10 +37,12 @@
       esc: 27
     },
     errorCode: {
+      400: 'Данные отправлены в некорректной форме',
       404: 'Запрашиваемая страница не найдена'
     },
     server: {
-      url: 'https://js.dump.academy/keksobooking/data'
+      urlLoad: 'https://js.dump.academy/keksobooking/data',
+      urlSave: 'https://js.dump.academy/keksobooking'
     }
   };
 })();

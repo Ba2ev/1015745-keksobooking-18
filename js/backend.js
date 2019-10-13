@@ -25,7 +25,7 @@
 
       xhr.timeout = 5000; // 5s
 
-      xhr.open('GET', window.params.server.url);
+      xhr.open('GET', window.params.server.urlLoad);
       xhr.send();
     },
 
@@ -38,7 +38,7 @@
         if (xhr.status === 200) {
           onLoad(xhr.response);
         } else {
-          onError('Cтатус ответа: ' + xhr.status + ' ' + xhr.statusText);
+          onError('Ошибка ' + xhr.status + ': ' + window.params.errorCode[xhr.status]);
         }
       });
 
@@ -47,12 +47,13 @@
       });
 
       xhr.addEventListener('timeout', function () {
-        onError('Запрос не успел выполниться за ' + xhr.timeout + 'мс');
+        onError('Запрос не успел выполниться за ' + xhr.timeout / 1000 + 'с');
       });
 
-      xhr.timeout = 5000; // 5s
+      xhr.timeout = 10000; // 5s
 
-      xhr.open('POST', window.params.server.url);
+      xhr.open('POST', window.params.server.urlSave);
+
       xhr.send(data);
     }
   };

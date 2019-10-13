@@ -2,13 +2,16 @@
 (function () {
   var noticeForm = document.querySelector('.ad-form');
   var noticeFormGroups = noticeForm.querySelectorAll('fieldset');
-  var noticeFormAdress = noticeForm.querySelector('#address');
+  var noticeFormTitle = noticeForm.querySelector('#title');
   var noticeFormPlaceType = noticeForm.querySelector('#type');
   var noticeFormPricePerNight = noticeForm.querySelector('#price');
   var noticeFormTimeIn = noticeForm.querySelector('#timein');
   var noticeFormTimeOut = noticeForm.querySelector('#timeout');
   var noticeFormRoomNumbers = noticeForm.querySelector('#room_number');
   var noticeFormCapacities = noticeForm.querySelector('#capacity');
+  var noticeFormFeaturesBox = noticeForm.querySelector('.features');
+  var noticeFormFeatures = noticeFormFeaturesBox.querySelectorAll('[name=features]');
+  var noticeFormDescription = noticeForm.querySelector('#description');
 
   var activateNoticeForm = function () {
     noticeForm.classList.remove('ad-form--disabled');
@@ -21,6 +24,41 @@
     noticeForm.classList.add('ad-form--disabled');
     for (var i = 0; i < noticeFormGroups.length; i++) {
       noticeFormGroups[i].setAttribute('disabled', 'disabled');
+    }
+  };
+
+  var saveNoticeFormBaseValues = function () {
+    var featuresStatuses = [];
+    for (var i = 0; i < noticeFormFeatures.length; i++) {
+      featuresStatuses.push(noticeFormFeatures[i].checked);
+    }
+
+    window.params['formBaseValues'] = {
+      baseTitle: noticeFormTitle.value,
+      basePlaceType: noticeFormPlaceType.value,
+      basePricePerNight: noticeFormPricePerNight.value,
+      baseTimeIn: noticeFormTimeIn.value,
+      baseTimeOut: noticeFormTimeOut.value,
+      baseRoomNumbers: noticeFormRoomNumbers.value,
+      baseCapacities: noticeFormCapacities.value,
+      baseFeaturesStatuses: featuresStatuses,
+      baseDescription: noticeFormDescription.value
+    };
+  };
+
+  var setNoticeFormBaseValues = function () {
+    var noticeFormBaseValues = window.params.formBaseValues;
+    noticeFormTitle.value = noticeFormBaseValues.baseTitle;
+    noticeFormPlaceType.value = noticeFormBaseValues.basePlaceType;
+    noticeFormPricePerNight.value = noticeFormBaseValues.basePricePerNight;
+    noticeFormTimeIn.value = noticeFormBaseValues.baseTimeIn;
+    noticeFormTimeOut.value = noticeFormBaseValues.baseTimeOut;
+    noticeFormRoomNumbers.value = noticeFormBaseValues.baseRoomNumbers;
+    noticeFormCapacities.value = noticeFormBaseValues.baseCapacities;
+    noticeFormDescription.value = noticeFormBaseValues.baseDescription;
+
+    for (var i = 0; i < noticeFormFeatures.length; i++) {
+      noticeFormFeatures[i].checked = noticeFormBaseValues.baseFeaturesStatuses[i];
     }
   };
 
@@ -72,32 +110,14 @@
     }
   };
 
-  noticeForm.addEventListener('load', setMinPriceForPlaceType);
-
-  noticeFormAdress.addEventListener('keydown', function () {
-    noticeFormAdress.readOnly = true;
-  });
-
-  noticeFormAdress.addEventListener('blur', function () {
-    noticeFormAdress.readOnly = false;
-  });
-
-  noticeFormPlaceType.addEventListener('change', setMinPriceForPlaceType);
-
-  noticeFormRoomNumbers.addEventListener('change', validateNoticeForm);
-
-  noticeFormCapacities.addEventListener('change', validateNoticeForm);
-
-  noticeFormTimeIn.addEventListener('change', function () {
-    window.util.synchronizeElementsValues(noticeFormTimeIn, noticeFormTimeOut);
-  });
-
-  noticeFormTimeOut.addEventListener('change', function () {
-    window.util.synchronizeElementsValues(noticeFormTimeOut, noticeFormTimeIn);
-  });
-
   window.form = {
     activateNoticeForm: activateNoticeForm,
-    deactivateNoticeForm: deactivateNoticeForm
+    deactivateNoticeForm: deactivateNoticeForm,
+    saveNoticeFormBaseValues: saveNoticeFormBaseValues,
+    setNoticeFormBaseValues: setNoticeFormBaseValues,
+    setMinPriceForPlaceType: setMinPriceForPlaceType,
+    validateCapacityNoGuests: validateCapacityNoGuests,
+    validateCapacityLimit: validateCapacityLimit,
+    validateNoticeForm: validateNoticeForm
   };
 })();
