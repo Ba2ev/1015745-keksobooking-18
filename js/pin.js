@@ -24,6 +24,21 @@
   };
 
   var renderPins = function () {
+
+    var sortingPins = function (pins) {
+      window.data = pins;
+      var mapFilter = document.querySelector('.map__filters');
+      var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
+      if (mapFilterPlaceType.value === 'any') {
+        return pins;
+      } else {
+        var filteredPins = pins.slice().filter(function (ad) {
+          return ad.offer.type === mapFilterPlaceType.value;
+        });
+        return filteredPins;
+      }
+    };
+
     var createAdHTML = function (ad) {
       var mapPinTemplate = document.querySelector('#pin')
         .content
@@ -37,14 +52,14 @@
       return adElement;
     };
 
-    var createPins = function (ads) {
-      window.data = ads;
+    var createPins = function (data) {
       var mapPins = document.querySelector('.map__pins');
-      var fragment = window.util.createFragment(ads, createAdHTML);
+      var fragment = window.util.createFragment(sortingPins(data), createAdHTML);
       mapPins.appendChild(fragment);
     };
 
     window.backend.load(createPins, window.showError);
+
   };
 
   var clearPins = function () {

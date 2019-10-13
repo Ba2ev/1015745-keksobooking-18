@@ -39,7 +39,13 @@
    */
   var createFragment = function (baseArray, htmlCreateFunction) {
     var baseFragment = document.createDocumentFragment();
-    for (var i = 0; i < baseArray.length; i++) {
+    var countLimit;
+    if (baseArray.length <= window.params.pin.pinMaxCount) {
+      countLimit = baseArray.length;
+    } else {
+      countLimit = window.params.pin.pinMaxCount;
+    }
+    for (var i = 0; i < countLimit; i++) {
       baseFragment.appendChild(htmlCreateFunction(baseArray[i]));
     }
     return baseFragment;

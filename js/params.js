@@ -21,7 +21,8 @@
       pinWidth: 50,
       pinHeight: 70,
       pinPositionTopLimit: 130,
-      pinPositionBottomLimit: 630
+      pinPositionBottomLimit: 630,
+      pinMaxCount: 5
     },
     form: {
       priceMinValue: 1000,
