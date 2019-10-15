@@ -23,43 +23,42 @@
     }
   };
 
-  var renderPins = function () {
-
-    var sortingPins = function (pins) {
+  var sortPins = function (pins) {
+    var mapFilter = document.querySelector('.map__filters');
+    var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
+    if (mapFilterPlaceType.value === 'any') {
       window.data = pins;
-      var mapFilter = document.querySelector('.map__filters');
-      var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
-      if (mapFilterPlaceType.value === 'any') {
-        return pins;
-      } else {
-        var filteredPins = pins.slice().filter(function (ad) {
-          return ad.offer.type === mapFilterPlaceType.value;
-        });
-        return filteredPins;
-      }
-    };
+      return pins;
+    } else {
+      var filteredPins = pins.slice().filter(function (ad) {
+        return ad.offer.type === mapFilterPlaceType.value;
+      });
+      window.data = filteredPins;
+      return filteredPins;
+    }
+  };
 
-    var createAdHTML = function (ad) {
-      var mapPinTemplate = document.querySelector('#pin')
-        .content
-        .querySelector('.map__pin');
-      var adElement = mapPinTemplate.cloneNode(true);
+  var createAdHTML = function (ad) {
+    var mapPinTemplate = document.querySelector('#pin')
+      .content
+      .querySelector('.map__pin');
+    var adElement = mapPinTemplate.cloneNode(true);
 
-      adElement.style = 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px';
-      adElement.querySelector('IMG').src = ad.author.avatar;
-      adElement.querySelector('IMG').alt = ad.offer.title;
+    adElement.style = 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px';
+    adElement.querySelector('IMG').src = ad.author.avatar;
+    adElement.querySelector('IMG').alt = ad.offer.title;
 
-      return adElement;
-    };
+    return adElement;
+  };
 
-    var createPins = function (data) {
-      var mapPins = document.querySelector('.map__pins');
-      var fragment = window.util.createFragment(sortingPins(data), createAdHTML);
-      mapPins.appendChild(fragment);
-    };
+  var createPins = function (pins) {
+    var mapPins = document.querySelector('.map__pins');
+    var fragment = window.util.createFragment(sortPins(pins), createAdHTML);
+    mapPins.appendChild(fragment);
+  };
 
+  var renderPins = function () {
     window.backend.load(createPins, window.showError);
-
   };
 
   var clearPins = function () {
