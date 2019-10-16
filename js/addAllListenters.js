@@ -3,6 +3,8 @@
   var map = document.querySelector('.map');
   var mapMainPin = document.querySelector('.map__pin--main');
   var mapPins = document.querySelector('.map__pins');
+  var mapFilter = document.querySelector('.map__filters');
+  var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
 
   var noticeForm = document.querySelector('.ad-form');
   var noticeFormAdress = noticeForm.querySelector('#address');
@@ -33,6 +35,12 @@
     window.form.setNoticeFormBaseValues();
   };
 
+  var updatePins = function () {
+    window.card.closeAdCard();
+    window.pin.clearPins();
+    window.pin.renderPins();
+  };
+
   window.addEventListener('load', function () {
     window.form.saveNoticeFormBaseValues();
     window.mainPin.saveMainPinStartCoordinates();
@@ -55,6 +63,8 @@
   mapPins.addEventListener('click', function (evt) {
     window.pin.onPinClick(evt);
   });
+
+  mapFilterPlaceType.addEventListener('change', updatePins);
 
   noticeForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(noticeForm), function () {

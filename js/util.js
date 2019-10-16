@@ -34,13 +34,19 @@
   /**
    * Создаёт и возвращает DocumentFragment из массива элементов
    * @param {*[]} baseArray - исходный массив элементов
-   * @param {callback} htmlCreateFunction - функция, ответственная за создание HTML-элемента
+   * @param {callback} createHTML - функция, ответственная за создание HTML-элемента
    * @return {HTMLDivElement} baseFragment - DocumentFragment на основе массива
    */
-  var createFragment = function (baseArray, htmlCreateFunction) {
+  var createFragment = function (baseArray, createHTML) {
     var baseFragment = document.createDocumentFragment();
-    for (var i = 0; i < baseArray.length; i++) {
-      baseFragment.appendChild(htmlCreateFunction(baseArray[i]));
+    var countLimit;
+    if (baseArray.length <= window.params.pin.MaxCount) {
+      countLimit = baseArray.length;
+    } else {
+      countLimit = window.params.pin.MaxCount;
+    }
+    for (var i = 0; i < countLimit; i++) {
+      baseFragment.appendChild(createHTML(baseArray[i]));
     }
     return baseFragment;
   };
