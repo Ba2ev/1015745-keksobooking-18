@@ -38,7 +38,7 @@
     }
   };
 
-  var createAdHTML = function (ad) {
+  var createAdHtml = function (ad) {
     var mapPinTemplate = document.querySelector('#pin')
       .content
       .querySelector('.map__pin');
@@ -53,7 +53,7 @@
 
   var createPins = function (pins) {
     var mapPins = document.querySelector('.map__pins');
-    var fragment = window.util.createFragment(sortPins(pins), createAdHTML);
+    var fragment = window.util.createFragment(sortPins(pins), createAdHtml);
     mapPins.appendChild(fragment);
   };
 

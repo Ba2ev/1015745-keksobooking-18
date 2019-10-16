@@ -26,18 +26,18 @@
     }
   };
 
-  var createAdFeatureHTML = function (adFeature) {
+  var createAdFeatureHtml = function (adFeature) {
     var adFeatureElement = document.createElement('li');
     adFeatureElement.className = 'popup__feature popup__feature--' + adFeature;
     return adFeatureElement;
   };
 
-  var createAdPhotoHTML = function (adPhoto) {
+  var createAdPhotoHtml = function (adPhoto) {
     var adPhotoElement = document.createElement('img');
     adPhotoElement.src = adPhoto;
     adPhotoElement.className = 'popup__photo';
-    adPhotoElement.width = window.params.ad.PhotoWidth;
-    adPhotoElement.height = window.params.ad.PhotoHeight;
+    adPhotoElement.width = window.params.ad.photoWidth;
+    adPhotoElement.height = window.params.ad.photoHeight;
     adPhotoElement.alt = 'Фотография жилья';
     return adPhotoElement;
   };
@@ -45,8 +45,8 @@
   var renderCard = function (ad) {
     var mapFilter = document.querySelector('.map__filters-container');
     var cardElement = mapCardTemplate.cloneNode(true);
-    var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHTML);
-    var adPhotoesFragment = window.util.createFragment(ad.offer.photos, createAdPhotoHTML);
+    var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHtml);
+    var adPhotoesFragment = window.util.createFragment(ad.offer.photos, createAdPhotoHtml);
 
     cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;
