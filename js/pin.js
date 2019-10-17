@@ -77,7 +77,6 @@
       return pins;
     } else {
       var filteredPins = pins.slice().filter(isSimilar);
-      console.log(filteredPins);
       window.data = filteredPins;
       return filteredPins;
     }
