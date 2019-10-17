@@ -1,5 +1,8 @@
 'use strict';
 (function () {
+  var mapFilter = document.querySelector('.map__filters');
+  var unsortedValue = 'any';
+
   var onPinClick = function (evt) {
     var mapCard = document.querySelector('.map__card.popup');
     var mapPins = document.querySelector('.map__pins');
@@ -23,27 +26,32 @@
     }
   };
 
-  var isSimilar = function (ad) {
-    var mapFilter = document.querySelector('.map__filters');
+  var isPlaceTypeSimilar = function (ad) {
     var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
-    var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
+    if (mapFilterPlaceType.value !== unsortedValue) {
+      return ad.offer.type === mapFilterPlaceType.value;
+    }
+    return true;
+  };
+
+  var isRoomNumbersSimilar = function (ad) {
     var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
+    if (mapFilterRoomNumbers.value !== unsortedValue) {
+      return ad.offer.rooms === Number(mapFilterRoomNumbers.value);
+    }
+    return true;
+  };
+
+  var isCapacitiesSimilar = function (ad) {
     var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
-    var unsortedValue = 'any';
-    var checkedFeatures = window.mapFilter.getCheckedFeatures();
-
-    if (mapFilterPlaceType.value !== unsortedValue && ad.offer.type !== mapFilterPlaceType.value) {
-      return false;
+    if (mapFilterCapacities.value !== unsortedValue) {
+      return ad.offer.guests === Number(mapFilterCapacities.value);
     }
+    return true;
+  };
 
-    if (mapFilterRoomNumbers.value !== unsortedValue && ad.offer.rooms !== Number(mapFilterRoomNumbers.value)) {
-      return false;
-    }
-
-    if (mapFilterCapacities.value !== unsortedValue && ad.offer.guests !== Number(mapFilterCapacities.value)) {
-      return false;
-    }
-
+  var isPricePerNightSimilar = function (ad) {
+    var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
     if (mapFilterPricePerNight.value !== unsortedValue) {
 
       var currentValue = '';
@@ -60,14 +68,21 @@
         return false;
       }
     }
+    return true;
+  };
 
+  var isFeaturesSimilar = function (ad) {
+    var checkedFeatures = window.mapFilter.getCheckedFeatures();
     for (var i = 0; i < checkedFeatures.length; i++) {
       if (ad.offer.features.indexOf(checkedFeatures[i].value) < 0) {
         return false;
       }
     }
-
     return true;
+  };
+
+  var isSimilar = function (ad) {
+    return isPlaceTypeSimilar(ad) && isRoomNumbersSimilar(ad) && isCapacitiesSimilar(ad) && isPricePerNightSimilar(ad) && isFeaturesSimilar(ad);
   };
 
   var sortPins = function (pins) {
