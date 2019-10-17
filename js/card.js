@@ -45,8 +45,8 @@
   var renderCard = function (ad) {
     var mapFilter = document.querySelector('.map__filters-container');
     var cardElement = mapCardTemplate.cloneNode(true);
-    var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHtml);
-    var adPhotoesFragment = window.util.createFragment(ad.offer.photos, createAdPhotoHtml);
+    var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHtml, 0);
+    var adPhotoesFragment = window.util.createFragment(ad.offer.photos, createAdPhotoHtml, 0);
 
     cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;

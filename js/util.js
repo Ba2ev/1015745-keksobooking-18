@@ -21,31 +21,18 @@
     return array[Math.floor(Math.random() * array.length)];
   };
 
-  /**
-   * Синхронизирует значение свойства value у двух элементов формы
-   * @param {HTMLElement} donorElement - элемент у которого берётся значение свойства value
-   * @param {HTMLElement} acceptorElement - элемент которому присваивается значение свойства value donorElement
-   */
   var synchronizeElementsValues = function (donorElement, acceptorElement) {
     var donorValue = donorElement.value;
     acceptorElement.value = donorValue;
   };
 
-  /**
-   * Создаёт и возвращает DocumentFragment из массива элементов
-   * @param {*[]} baseArray - исходный массив элементов
-   * @param {callback} createHtml - функция, ответственная за создание HTML-элемента
-   * @return {HTMLDivElement} baseFragment - DocumentFragment на основе массива
-   */
-  var createFragment = function (baseArray, createHtml) {
+  var createFragment = function (baseArray, createHtml, countLimit) {
     var baseFragment = document.createDocumentFragment();
-    var countLimit;
-    if (baseArray.length <= window.params.pin.maxCount) {
-      countLimit = baseArray.length;
-    } else {
-      countLimit = window.params.pin.maxCount;
+    var count = baseArray.length;
+    if (countLimit > 0 && baseArray.length > countLimit) {
+      count = countLimit;
     }
-    for (var i = 0; i < countLimit; i++) {
+    for (var i = 0; i < count; i++) {
       baseFragment.appendChild(createHtml(baseArray[i]));
     }
     return baseFragment;

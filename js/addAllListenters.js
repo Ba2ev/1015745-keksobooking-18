@@ -5,6 +5,10 @@
   var mapPins = document.querySelector('.map__pins');
   var mapFilter = document.querySelector('.map__filters');
   var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
+  var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
+  var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
+  var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
+  var mapFilterFeatures = mapFilter.querySelector('#housing-features');
 
   var noticeForm = document.querySelector('.ad-form');
   var noticeFormAdress = noticeForm.querySelector('#address');
@@ -28,6 +32,7 @@
   };
 
   var resetPage = function () {
+    window.mapFilter.setMapFilterDefaultParametrs();
     window.mainPin.setMainPinStartCoordinates();
     window.mainPin.setMainPinCoordinates();
     window.pin.clearPins();
@@ -42,6 +47,7 @@
   };
 
   window.addEventListener('load', function () {
+    window.mapFilter.saveMapFilterDefaultParametrs();
     window.form.saveNoticeFormBaseValues();
     window.mainPin.saveMainPinStartCoordinates();
     window.mainPin.setMainPinCoordinates();
@@ -65,6 +71,19 @@
   });
 
   mapFilterPlaceType.addEventListener('change', updatePins);
+
+  mapFilterPricePerNight.addEventListener('change', updatePins);
+
+  mapFilterRoomNumbers.addEventListener('change', updatePins);
+
+  mapFilterCapacities.addEventListener('change', updatePins);
+
+  mapFilterFeatures.addEventListener('click', function (evt) {
+    evt.stopPropagation();
+    if (evt.target.classList.contains('map__feature')) {
+      window.debounce(updatePins);
+    }
+  });
 
   noticeForm.addEventListener('submit', function (evt) {
     window.backend.save(new FormData(noticeForm), function () {

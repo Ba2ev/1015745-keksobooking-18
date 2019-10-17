@@ -23,16 +23,61 @@
     }
   };
 
-  var sortPins = function (pins) {
+  var isSimilar = function (ad) {
     var mapFilter = document.querySelector('.map__filters');
     var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
-    if (mapFilterPlaceType.value === 'any') {
+    var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
+    var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
+    var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
+    var unsortedValue = 'any';
+    var checkedFeatures = window.mapFilter.getCheckedFeatures();
+
+    if (mapFilterPlaceType.value !== unsortedValue && ad.offer.type !== mapFilterPlaceType.value) {
+      return false;
+    }
+
+    if (mapFilterRoomNumbers.value !== unsortedValue && ad.offer.rooms !== Number(mapFilterRoomNumbers.value)) {
+      return false;
+    }
+
+    if (mapFilterCapacities.value !== unsortedValue && ad.offer.guests !== Number(mapFilterCapacities.value)) {
+      return false;
+    }
+
+    if (mapFilterPricePerNight.value !== unsortedValue) {
+
+      var currentValue = '';
+
+      if (ad.offer.price >= 50000) {
+        currentValue = 'high';
+      } else if (ad.offer.price >= 10000) {
+        currentValue = 'middle';
+      } else {
+        currentValue = 'low';
+      }
+
+      if (currentValue !== mapFilterPricePerNight.value) {
+        return false;
+      }
+    }
+
+    for (var i = 0; i < checkedFeatures.length; i++) {
+      if (ad.offer.features.indexOf(checkedFeatures[i].value) < 0) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  var sortPins = function (pins) {
+
+    if (window.mapFilter.isMapFilterDefaultParametrs()) {
       window.data = pins;
       return pins;
     } else {
-      var filteredPins = pins.slice().filter(function (ad) {
-        return ad.offer.type === mapFilterPlaceType.value;
-      });
+      var filteredPins = pins.slice().filter(isSimilar);
+      console.log(filteredPins);
       window.data = filteredPins;
       return filteredPins;
     }
@@ -53,7 +98,7 @@
 
   var createPins = function (pins) {
     var mapPins = document.querySelector('.map__pins');
-    var fragment = window.util.createFragment(sortPins(pins), createAdHtml);
+    var fragment = window.util.createFragment(sortPins(pins), createAdHtml, window.params.pin.maxCount);
     mapPins.appendChild(fragment);
   };
 
