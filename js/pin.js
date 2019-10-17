@@ -87,7 +87,7 @@
 
   var sortPins = function (pins) {
 
-    if (window.mapFilter.isMapFilterDefaultParametrs()) {
+    if (window.mapFilter.isMapFilterDefaultParameters()) {
       window.data = pins;
       return pins;
     } else {

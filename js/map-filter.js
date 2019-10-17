@@ -7,13 +7,13 @@
   var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
   var mapFilterFeatures = mapFilter.querySelectorAll('[name=features]');
 
-  var saveMapFilterDefaultParametrs = function () {
+  var saveMapFilterDefaultParameters = function () {
     var featuresStatuses = [];
     for (var i = 0; i < mapFilterFeatures.length; i++) {
       featuresStatuses.push(mapFilterFeatures[i].checked);
     }
 
-    window.params['filterDefaultParametrs'] = {
+    window.params['filterDefaultParameters'] = {
       defaultPlaceType: mapFilterPlaceType.value,
       defaulPricePerNight: mapFilterPricePerNight.value,
       defaultRoomNumbers: mapFilterRoomNumbers.value,
@@ -22,33 +22,33 @@
     };
   };
 
-  var setMapFilterDefaultParametrs = function () {
-    var filterDefaultParametrs = window.params.filterDefaultParametrs;
-    mapFilterPlaceType.value = filterDefaultParametrs.defaultPlaceType;
-    mapFilterPricePerNight.value = filterDefaultParametrs.defaulPricePerNight;
-    mapFilterRoomNumbers.value = filterDefaultParametrs.defaultRoomNumbers;
-    mapFilterCapacities.value = filterDefaultParametrs.defaultCapacities;
+  var setMapFilterDefaultParameters = function () {
+    var filterDefaultParameters = window.params.filterDefaultParameters;
+    mapFilterPlaceType.value = filterDefaultParameters.defaultPlaceType;
+    mapFilterPricePerNight.value = filterDefaultParameters.defaulPricePerNight;
+    mapFilterRoomNumbers.value = filterDefaultParameters.defaultRoomNumbers;
+    mapFilterCapacities.value = filterDefaultParameters.defaultCapacities;
 
     for (var i = 0; i < mapFilterFeatures.length; i++) {
-      mapFilterFeatures[i].checked = filterDefaultParametrs.defaultFeaturesStatuses[i];
+      mapFilterFeatures[i].checked = filterDefaultParameters.defaultFeaturesStatuses[i];
     }
   };
 
-  var isMapFilterDefaultParametrs = function () {
-    if (mapFilterPlaceType.value !== window.params.filterDefaultParametrs.defaultPlaceType) {
+  var isMapFilterDefaultParameters = function () {
+    if (mapFilterPlaceType.value !== window.params.filterDefaultParameters.defaultPlaceType) {
       return false;
     }
-    if (mapFilterPricePerNight.value !== window.params.filterDefaultParametrs.defaulPricePerNight) {
+    if (mapFilterPricePerNight.value !== window.params.filterDefaultParameters.defaulPricePerNight) {
       return false;
     }
-    if (mapFilterRoomNumbers.value !== window.params.filterDefaultParametrs.defaultRoomNumbers) {
+    if (mapFilterRoomNumbers.value !== window.params.filterDefaultParameters.defaultRoomNumbers) {
       return false;
     }
-    if (mapFilterCapacities.value !== window.params.filterDefaultParametrs.defaultCapacities) {
+    if (mapFilterCapacities.value !== window.params.filterDefaultParameters.defaultCapacities) {
       return false;
     }
     for (var i = 0; i < mapFilterFeatures.length; i++) {
-      if (mapFilterFeatures[i].checked !== window.params.filterDefaultParametrs.defaultFeaturesStatuses[i]) {
+      if (mapFilterFeatures[i].checked !== window.params.filterDefaultParameters.defaultFeaturesStatuses[i]) {
         return false;
       }
     }
@@ -66,9 +66,9 @@
   };
 
   window.mapFilter = {
-    saveMapFilterDefaultParametrs: saveMapFilterDefaultParametrs,
-    setMapFilterDefaultParametrs: setMapFilterDefaultParametrs,
-    isMapFilterDefaultParametrs: isMapFilterDefaultParametrs,
+    saveMapFilterDefaultParameters: saveMapFilterDefaultParameters,
+    setMapFilterDefaultParameters: setMapFilterDefaultParameters,
+    isMapFilterDefaultParameters: isMapFilterDefaultParameters,
     getCheckedFeatures: getCheckedFeatures
   };
 })();
