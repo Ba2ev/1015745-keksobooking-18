@@ -8,20 +8,20 @@
       bungalo: 'Бунгало'
     },
     ad: {
-      PhotoWidth: 45,
-      PhotoHeight: 40
+      photoWidth: 45,
+      photoHeight: 40
     },
     mainPin: {
-      Width: 65,
-      Height: 65,
-      SpikeHeight: 22
+      width: 65,
+      height: 65,
+      spikeHeight: 22
     },
     pin: {
-      Width: 50,
-      Height: 70,
-      PositionTopLimit: 130,
-      PositionBottomLimit: 630,
-      MaxCount: 5
+      width: 50,
+      height: 70,
+      positionTopLimit: 130,
+      positionBottomLimit: 630,
+      maxCount: 5
     },
     form: {
       priceMinValue: 1000,

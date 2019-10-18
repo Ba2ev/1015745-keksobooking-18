@@ -1,5 +1,8 @@
 'use strict';
 (function () {
+  var mapFilter = document.querySelector('.map__filters');
+  var unsortedValue = 'any';
+
   var onPinClick = function (evt) {
     var mapCard = document.querySelector('.map__card.popup');
     var mapPins = document.querySelector('.map__pins');
@@ -23,22 +26,78 @@
     }
   };
 
-  var sortPins = function (pins) {
-    var mapFilter = document.querySelector('.map__filters');
+  var isPlaceTypeSimilar = function (ad) {
     var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
-    if (mapFilterPlaceType.value === 'any') {
+    if (mapFilterPlaceType.value !== unsortedValue) {
+      return ad.offer.type === mapFilterPlaceType.value;
+    }
+    return true;
+  };
+
+  var isRoomNumbersSimilar = function (ad) {
+    var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
+    if (mapFilterRoomNumbers.value !== unsortedValue) {
+      return ad.offer.rooms === Number(mapFilterRoomNumbers.value);
+    }
+    return true;
+  };
+
+  var isCapacitiesSimilar = function (ad) {
+    var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
+    if (mapFilterCapacities.value !== unsortedValue) {
+      return ad.offer.guests === Number(mapFilterCapacities.value);
+    }
+    return true;
+  };
+
+  var isPricePerNightSimilar = function (ad) {
+    var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
+    if (mapFilterPricePerNight.value !== unsortedValue) {
+
+      var currentValue = '';
+
+      if (ad.offer.price >= 50000) {
+        currentValue = 'high';
+      } else if (ad.offer.price >= 10000) {
+        currentValue = 'middle';
+      } else {
+        currentValue = 'low';
+      }
+
+      if (currentValue !== mapFilterPricePerNight.value) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  var isFeaturesSimilar = function (ad) {
+    var checkedFeatures = window.mapFilter.getCheckedFeatures();
+    for (var i = 0; i < checkedFeatures.length; i++) {
+      if (ad.offer.features.indexOf(checkedFeatures[i].value) < 0) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  var isSimilar = function (ad) {
+    return isPlaceTypeSimilar(ad) && isRoomNumbersSimilar(ad) && isCapacitiesSimilar(ad) && isPricePerNightSimilar(ad) && isFeaturesSimilar(ad);
+  };
+
+  var sortPins = function (pins) {
+
+    if (window.mapFilter.isMapFilterDefaultParameters()) {
       window.data = pins;
       return pins;
     } else {
-      var filteredPins = pins.slice().filter(function (ad) {
-        return ad.offer.type === mapFilterPlaceType.value;
-      });
+      var filteredPins = pins.slice().filter(isSimilar);
       window.data = filteredPins;
       return filteredPins;
     }
   };
 
-  var createAdHTML = function (ad) {
+  var createAdHtml = function (ad) {
     var mapPinTemplate = document.querySelector('#pin')
       .content
       .querySelector('.map__pin');
@@ -53,7 +112,7 @@
 
   var createPins = function (pins) {
     var mapPins = document.querySelector('.map__pins');
-    var fragment = window.util.createFragment(sortPins(pins), createAdHTML);
+    var fragment = window.util.createFragment(sortPins(pins), createAdHtml, window.params.pin.maxCount);
     mapPins.appendChild(fragment);
   };
 

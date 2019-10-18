@@ -22,11 +22,11 @@
     var mainPinY = mapMainPin.style.top;
     var mainPinXValue = mainPinX.substr(0, mainPinX.length - 2);
     var mainPinYValue = mainPinY.substr(0, mainPinY.length - 2);
-    var mainPinSpikeX = Math.floor(Number(mainPinXValue) + window.params.mainPin.Width / 2);
-    var mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.Height + window.params.mainPin.SpikeHeight);
+    var mainPinSpikeX = Math.floor(Number(mainPinXValue) + window.params.mainPin.width / 2);
+    var mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.height + window.params.mainPin.spikeHeight);
 
     if (noticeForm.classList.contains('ad-form--disabled')) {
-      mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.Height / 2);
+      mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.height / 2);
     }
     noticeFormAdress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
   };
@@ -38,8 +38,8 @@
     var mainPinX = mainPinCoordinates[0];
     var mainPinY = mainPinCoordinates[1];
 
-    if (mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < window.params.pin.PositionTopLimit || mainPinY > window.params.pin.PositionBottomLimit) {
-      noticeFormAdress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + window.params.pin.PositionTopLimit + ' <= Y <= ' + window.params.pin.PositionBottomLimit);
+    if (mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < window.params.pin.positionTopLimit || mainPinY > window.params.pin.positionBottomLimit) {
+      noticeFormAdress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + window.params.pin.positionTopLimit + ' <= Y <= ' + window.params.pin.positionBottomLimit);
     } else {
       noticeFormAdress.setCustomValidity('');
     }
@@ -69,10 +69,10 @@
         y: moveEvt.clientY
       };
 
-      var mainPinHalfWidth = Math.floor(window.params.mainPin.Width / 2);
-      var mainPinHeight = window.params.mainPin.Height + window.params.mainPin.SpikeHeight;
+      var mainPinHalfWidth = Math.floor(window.params.mainPin.width / 2);
+      var mainPinHeight = window.params.mainPin.height + window.params.mainPin.spikeHeight;
       if (((mapMainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mapMainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth)) {
-        if (((mapMainPin.offsetTop - shift.y) >= window.params.pin.PositionTopLimit - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.PositionBottomLimit - mainPinHeight)) {
+        if (((mapMainPin.offsetTop - shift.y) >= window.params.pin.positionTopLimit - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.positionBottomLimit - mainPinHeight)) {
           mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
           mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
 
