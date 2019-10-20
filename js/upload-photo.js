@@ -17,7 +17,7 @@
     return adPhoto;
   };
 
-  var chooserChangeHandler = function (chooser, renderPlace) {
+  var photoChooserChangeHandler = function (chooser, renderPlace) {
     var file = chooser.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -42,10 +42,10 @@
   };
 
   avatarChooser.addEventListener('change', function () {
-    chooserChangeHandler(avatarChooser, avatarPreviewImage);
+    photoChooserChangeHandler(avatarChooser, avatarPreviewImage);
   });
 
   photoChooser.addEventListener('change', function () {
-    chooserChangeHandler(photoChooser, photoBlock);
+    photoChooserChangeHandler(photoChooser, photoBlock);
   });
 })();

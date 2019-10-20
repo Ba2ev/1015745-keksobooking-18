@@ -1,11 +1,27 @@
 'use strict';
 (function () {
   var mapFilter = document.querySelector('.map__filters');
+  var mapFilterGroups = mapFilter.querySelectorAll('.map__filter');
+  var mapFilterFeaturesGroup = mapFilter.querySelector('.map__features');
   var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
   var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
   var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
   var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
   var mapFilterFeatures = mapFilter.querySelectorAll('[name=features]');
+
+  var deactivateMapFilter = function () {
+    mapFilterFeaturesGroup.setAttribute('disabled', 'disabled');
+    for (var i = 0; i < mapFilterGroups.length; i++) {
+      mapFilterGroups[i].setAttribute('disabled', 'disabled');
+    }
+  };
+
+  var activateMapFilter = function () {
+    mapFilterFeaturesGroup.removeAttribute('disabled');
+    for (var i = 0; i < mapFilterGroups.length; i++) {
+      mapFilterGroups[i].removeAttribute('disabled');
+    }
+  };
 
   var saveMapFilterDefaultParameters = function () {
     var featuresStatuses = [];
@@ -66,6 +82,8 @@
   };
 
   window.mapFilter = {
+    activateMapFilter: activateMapFilter,
+    deactivateMapFilter: deactivateMapFilter,
     saveMapFilterDefaultParameters: saveMapFilterDefaultParameters,
     setMapFilterDefaultParameters: setMapFilterDefaultParameters,
     isMapFilterDefaultParameters: isMapFilterDefaultParameters,

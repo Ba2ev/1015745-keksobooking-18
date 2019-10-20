@@ -20,8 +20,10 @@
     var noticeFormAdress = noticeForm.querySelector('#address');
     var mainPinX = mapMainPin.style.left;
     var mainPinY = mapMainPin.style.top;
+
     var mainPinXValue = mainPinX.substr(0, mainPinX.length - 2);
     var mainPinYValue = mainPinY.substr(0, mainPinY.length - 2);
+
     var mainPinSpikeX = Math.floor(Number(mainPinXValue) + window.params.mainPin.width / 2);
     var mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.height + window.params.mainPin.spikeHeight);
 
@@ -71,6 +73,7 @@
 
       var mainPinHalfWidth = Math.floor(window.params.mainPin.width / 2);
       var mainPinHeight = window.params.mainPin.height + window.params.mainPin.spikeHeight;
+
       if (((mapMainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mapMainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth)) {
         if (((mapMainPin.offsetTop - shift.y) >= window.params.pin.positionTopLimit - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.positionBottomLimit - mainPinHeight)) {
           mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';

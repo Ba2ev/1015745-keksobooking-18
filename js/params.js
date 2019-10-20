@@ -24,6 +24,8 @@
       maxCount: 5
     },
     form: {
+      titleMinLength: 30,
+      titleMaxLength: 100,
       priceMinValue: 1000,
       priceMaxValue: 50000,
       roomsMaxValue: 5,
@@ -36,7 +38,9 @@
       placePhotoHeight: 70,
     },
     keyCode: {
-      esc: 27
+      esc: 27,
+      enter: 13,
+      space: 32
     },
     errorCode: {
       400: 'Данные отправлены в некорректной форме',

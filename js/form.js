@@ -89,6 +89,14 @@
     noticeFormPricePerNight.placeholder = noticeFormPricePerNight.min;
   };
 
+  var validateTitleLength = function () {
+    if (noticeFormTitle.value.length < window.params.form.titleMinLength || noticeFormTitle.value.length > window.params.form.titleMaxLength) {
+      noticeFormTitle.setCustomValidity('Заголовок должен быть от 30 до 100 символов. Сейчас: ' + noticeFormTitle.value.length);
+    } else {
+      noticeFormTitle.setCustomValidity('');
+    }
+  };
+
   var validateCapacityNoGuests = function () {
 
     if (Number(noticeFormCapacities.value) === 0 && Number(noticeFormRoomNumbers.value) !== 100) {
@@ -110,6 +118,7 @@
   };
 
   var validateNoticeForm = function () {
+    validateTitleLength();
     validateCapacityLimit();
     if (Number(noticeFormCapacities.value) === 0 || Number(noticeFormRoomNumbers.value) === 100) {
       validateCapacityNoGuests();
@@ -122,6 +131,7 @@
     saveNoticeFormBaseValues: saveNoticeFormBaseValues,
     setNoticeFormBaseValues: setNoticeFormBaseValues,
     setMinPriceForPlaceType: setMinPriceForPlaceType,
+    validateTitleLength: validateTitleLength,
     validateCapacityNoGuests: validateCapacityNoGuests,
     validateCapacityLimit: validateCapacityLimit,
     validateNoticeForm: validateNoticeForm
