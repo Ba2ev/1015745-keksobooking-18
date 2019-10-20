@@ -1,7 +1,7 @@
 'use strict';
 (function () {
-  var onErrorEscPress = function (evt) {
-    if (evt.keyCode === window.params.keyCode.esc) {
+  var errorPressESCHandler = function (evt) {
+    if (evt.keyCode === window.params.keyCode.ESC) {
       closeError();
     }
   };
@@ -11,7 +11,7 @@
     var dialogErrorButton = document.querySelector('.error__button');
     dialogError.addEventListener('click', closeError);
     dialogErrorButton.addEventListener('click', closeError);
-    document.addEventListener('keydown', onErrorEscPress);
+    document.addEventListener('keydown', errorPressESCHandler);
   };
 
   var closeError = function () {
@@ -20,7 +20,7 @@
     dialogError.remove();
     dialogError.removeEventListener('click', closeError);
     dialogErrorButton.removeEventListener('click', closeError);
-    document.removeEventListener('keydown', onErrorEscPress);
+    document.removeEventListener('keydown', errorPressESCHandler);
   };
 
   window.showError = function (text) {

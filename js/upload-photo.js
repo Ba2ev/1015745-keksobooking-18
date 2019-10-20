@@ -11,8 +11,8 @@
     var adPhoto = document.createElement('IMG');
     adPhoto.classList.add('popup__photo');
     adPhoto.src = photoSrc;
-    adPhoto.width = window.params.form.placePhotoWidth;
-    adPhoto.height = window.params.form.placePhotoHeight;
+    adPhoto.width = window.params.form.PLACE_PHOTO_WIDTH;
+    adPhoto.height = window.params.form.PLACE_PHOTO_HEIGHT;
     adPhoto.alt = 'Фотография жилья';
     return adPhoto;
   };

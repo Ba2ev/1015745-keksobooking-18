@@ -9,20 +9,6 @@
   var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
   var mapFilterFeatures = mapFilter.querySelectorAll('[name=features]');
 
-  var deactivateMapFilter = function () {
-    mapFilterFeaturesGroup.setAttribute('disabled', 'disabled');
-    for (var i = 0; i < mapFilterGroups.length; i++) {
-      mapFilterGroups[i].setAttribute('disabled', 'disabled');
-    }
-  };
-
-  var activateMapFilter = function () {
-    mapFilterFeaturesGroup.removeAttribute('disabled');
-    for (var i = 0; i < mapFilterGroups.length; i++) {
-      mapFilterGroups[i].removeAttribute('disabled');
-    }
-  };
-
   var saveMapFilterDefaultParameters = function () {
     var featuresStatuses = [];
     for (var i = 0; i < mapFilterFeatures.length; i++) {
@@ -72,13 +58,28 @@
   };
 
   var getCheckedFeatures = function () {
-    var chekedFeatures = [];
+    var checkedFeatures = [];
     for (var i = 0; i < mapFilterFeatures.length; i++) {
-      chekedFeatures.push(mapFilterFeatures[i]);
+      checkedFeatures.push(mapFilterFeatures[i]);
     }
-    return chekedFeatures.slice().filter(function (feature) {
+    return checkedFeatures.slice().filter(function (feature) {
       return feature.checked === true;
     });
+  };
+
+  var deactivateMapFilter = function () {
+    mapFilterFeaturesGroup.setAttribute('disabled', 'disabled');
+    for (var i = 0; i < mapFilterGroups.length; i++) {
+      mapFilterGroups[i].setAttribute('disabled', 'disabled');
+    }
+    setMapFilterDefaultParameters();
+  };
+
+  var activateMapFilter = function () {
+    mapFilterFeaturesGroup.removeAttribute('disabled');
+    for (var i = 0; i < mapFilterGroups.length; i++) {
+      mapFilterGroups[i].removeAttribute('disabled');
+    }
   };
 
   window.mapFilter = {

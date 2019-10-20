@@ -8,47 +8,41 @@
       bungalo: 'Бунгало'
     },
     ad: {
-      photoWidth: 45,
-      photoHeight: 40
+      PHOTO_WIDTH: 45,
+      PHOTO_HEIGHT: 40
     },
     mainPin: {
-      width: 65,
-      height: 65,
-      spikeHeight: 22
+      WIDTH: 65,
+      HEIGHT: 65,
+      SPIKE_HEIGHT: 22
     },
     pin: {
-      width: 50,
-      height: 70,
-      positionTopLimit: 130,
-      positionBottomLimit: 630,
-      maxCount: 5
+      POSITION_TOP_LIMIT: 130,
+      POSITION_BOTTOM_LIMIT: 630,
+      MAX_COUNT: 5
     },
     form: {
-      titleMinLength: 30,
-      titleMaxLength: 100,
-      priceMinValue: 1000,
-      priceMaxValue: 50000,
-      roomsMaxValue: 5,
-      guestsMaxValue: 8,
-      bungaloMinPrice: 0,
-      flatMinPrice: 1000,
-      houseMinPrice: 5000,
-      palaceMinPrice: 10000,
-      placePhotoWidth: 70,
-      placePhotoHeight: 70,
+      TITLE_MIN_LENGTH: 30,
+      TITLE_MAX_LENGTH: 100,
+      BUNGALO_MIN_PRICE: 0,
+      FLAT_MIN_PRICE: 1000,
+      HOUSE_MIN_PRICE: 5000,
+      PALACE_MIN_PRICE: 10000,
+      PLACE_PHOTO_WIDTH: 70,
+      PLACE_PHOTO_HEIGHT: 70
     },
     keyCode: {
-      esc: 27,
-      enter: 13,
-      space: 32
+      ESC: 27,
+      ENTER: 13,
+      SPACE: 32
     },
     errorCode: {
       400: 'Данные отправлены в некорректной форме',
       404: 'Запрашиваемая страница не найдена'
     },
     server: {
-      urlLoad: 'https://js.dump.academy/keksobooking/data',
-      urlSave: 'https://js.dump.academy/keksobooking'
+      URL_LOAD: 'https://js.dump.academy/keksobooking/data',
+      URL_SAVE: 'https://js.dump.academy/keksobooking'
     }
   };
 })();

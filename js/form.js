@@ -71,16 +71,16 @@
   var setMinPriceForPlaceType = function () {
     switch (noticeFormPlaceType.value) {
       case 'flat':
-        noticeFormPricePerNight.min = window.params.form.flatMinPrice;
+        noticeFormPricePerNight.min = window.params.form.FLAT_MIN_PRICE;
         break;
       case 'house':
-        noticeFormPricePerNight.min = window.params.form.houseMinPrice;
+        noticeFormPricePerNight.min = window.params.form.HOUSE_MIN_PRICE;
         break;
       case 'palace':
-        noticeFormPricePerNight.min = window.params.form.palaceMinPrice;
+        noticeFormPricePerNight.min = window.params.form.PALACE_MIN_PRICE;
         break;
       case 'bungalo':
-        noticeFormPricePerNight.min = window.params.form.bungaloMinPrice;
+        noticeFormPricePerNight.min = window.params.form.BUNGALO_MIN_PRICE;
         break;
       default:
         noticeFormPricePerNight.min = 0;
@@ -90,7 +90,7 @@
   };
 
   var validateTitleLength = function () {
-    if (noticeFormTitle.value.length < window.params.form.titleMinLength || noticeFormTitle.value.length > window.params.form.titleMaxLength) {
+    if (noticeFormTitle.value.length < window.params.form.TITLE_MIN_LENGTH || noticeFormTitle.value.length > window.params.form.TITLE_MAX_LENGTH) {
       noticeFormTitle.setCustomValidity('Заголовок должен быть от 30 до 100 символов. Сейчас: ' + noticeFormTitle.value.length);
     } else {
       noticeFormTitle.setCustomValidity('');
@@ -131,9 +131,6 @@
     saveNoticeFormBaseValues: saveNoticeFormBaseValues,
     setNoticeFormBaseValues: setNoticeFormBaseValues,
     setMinPriceForPlaceType: setMinPriceForPlaceType,
-    validateTitleLength: validateTitleLength,
-    validateCapacityNoGuests: validateCapacityNoGuests,
-    validateCapacityLimit: validateCapacityLimit,
     validateNoticeForm: validateNoticeForm
   };
 })();

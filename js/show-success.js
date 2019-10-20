@@ -1,7 +1,7 @@
 'use strict';
 (function () {
-  var onSuccessEscPress = function (evt) {
-    if (evt.keyCode === window.params.keyCode.esc) {
+  var successPressEscHandler = function (evt) {
+    if (evt.keyCode === window.params.keyCode.ESC) {
       closeSuccess();
     }
   };
@@ -9,13 +9,13 @@
   var openSuccess = function () {
     var dialogSuccess = document.querySelector('.success');
     dialogSuccess.addEventListener('click', closeSuccess);
-    document.addEventListener('keydown', onSuccessEscPress);
+    document.addEventListener('keydown', successPressEscHandler);
   };
 
   var closeSuccess = function () {
     var dialogSuccess = document.querySelector('.success');
     dialogSuccess.removeEventListener('click', closeSuccess);
-    document.removeEventListener('keydown', onSuccessEscPress);
+    document.removeEventListener('keydown', successPressEscHandler);
     dialogSuccess.remove();
   };
 

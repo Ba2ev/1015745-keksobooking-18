@@ -25,7 +25,7 @@
 
       xhr.timeout = 5000; // 5s
 
-      xhr.open('GET', window.params.server.urlLoad);
+      xhr.open('GET', window.params.server.URL_LOAD);
       xhr.send();
     },
 
@@ -50,9 +50,9 @@
         onError('Запрос не успел выполниться за ' + xhr.timeout / 1000 + 'с');
       });
 
-      xhr.timeout = 10000; // 5s
+      xhr.timeout = 10000;
 
-      xhr.open('POST', window.params.server.urlSave);
+      xhr.open('POST', window.params.server.URL_SAVE);
 
       xhr.send(data);
     }

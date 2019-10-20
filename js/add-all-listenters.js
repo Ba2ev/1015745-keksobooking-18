@@ -12,7 +12,7 @@
 
   var noticeForm = document.querySelector('.ad-form');
   var noticeFormTitle = noticeForm.querySelector('#title');
-  var noticeFormAdress = noticeForm.querySelector('#address');
+  var noticeFormAddress = noticeForm.querySelector('#address');
   var noticeFormPlaceType = noticeForm.querySelector('#type');
   var noticeFormRoomNumbers = noticeForm.querySelector('#room_number');
   var noticeFormCapacities = noticeForm.querySelector('#capacity');
@@ -21,7 +21,6 @@
   var buttonReset = noticeForm.querySelector('.ad-form__reset');
 
   var deactivatePage = function () {
-    window.mapFilter.deactivateMapFilter();
     window.map.deactivateMap();
     window.form.deactivateNoticeForm();
     window.mainPin.setMainPinCoordinates();
@@ -62,7 +61,13 @@
     }
     window.mapFilter.saveMapFilterDefaultParameters();
     window.mainPin.setMainPinCoordinates();
-    window.mainPin.dragDrobMainPin(evt);
+    window.mainPin.dragDropMainPin(evt);
+  };
+
+  var mainPinPressEnterHandler = function (evt) {
+    if (evt.keyCode === window.params.keyCode.ENTER) {
+      mainPinMouseDownHandler(evt);
+    }
   };
 
   var mapFilterFeaturesClickHandler = function (evt) {
@@ -73,16 +78,19 @@
   };
 
   var mapFilterFeaturesPressEnterHandler = function (evt) {
-    var target = evt.target;
-    if (target.checked === false) {
-      target.checked = true;
-    } else {
-      target.checked = false;
+    if (evt.keyCode === window.params.keyCode.ENTER) {
+      evt.target.checked = !evt.target.checked;
+      window.debounce(updatePins);
     }
-    window.debounce(updatePins);
   };
 
-  var notieFormSubmitHandler = function (evt) {
+  var mapFilterFeaturesPressSpaceHandler = function (evt) {
+    if (evt.keyCode === window.params.keyCode.SPACE) {
+      window.debounce(updatePins);
+    }
+  };
+
+  var noticeFormSubmitHandler = function (evt) {
     window.backend.save(new FormData(noticeForm), function () {
       window.showSuccess();
       resetPage();
@@ -91,15 +99,16 @@
     evt.preventDefault();
   };
 
+  var buttonResetClickHandler = function () {
+    resetPage();
+    deactivatePage();
+  };
+
   window.addEventListener('load', windowLoadHandler);
 
   mapMainPin.addEventListener('mousedown', mainPinMouseDownHandler);
 
-  mapMainPin.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.params.keyCode.enter) {
-      mainPinMouseDownHandler(evt);
-    }
-  });
+  mapMainPin.addEventListener('keydown', mainPinPressEnterHandler);
 
   mapPins.addEventListener('click', function (evt) {
     window.pin.onPinClick(evt);
@@ -123,31 +132,22 @@
 
   mapFilterFeatures.addEventListener('click', mapFilterFeaturesClickHandler);
 
-  mapFilterFeatures.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.params.keyCode.space) {
-      window.debounce(updatePins);
-    }
-  });
+  mapFilterFeatures.addEventListener('keydown', mapFilterFeaturesPressSpaceHandler);
 
-  mapFilterFeatures.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.params.keyCode.enter) {
-      mapFilterFeaturesPressEnterHandler(evt);
-      window.debounce(updatePins);
-    }
-  });
+  mapFilterFeatures.addEventListener('keydown', mapFilterFeaturesPressEnterHandler);
 
-  noticeForm.addEventListener('submit', notieFormSubmitHandler);
+  noticeForm.addEventListener('submit', noticeFormSubmitHandler);
 
   noticeFormTitle.addEventListener('change', function () {
     window.form.validateNoticeForm();
   });
 
-  noticeFormAdress.addEventListener('keydown', function () {
-    noticeFormAdress.readOnly = true;
+  noticeFormAddress.addEventListener('keydown', function () {
+    noticeFormAddress.readOnly = true;
   });
 
-  noticeFormAdress.addEventListener('blur', function () {
-    noticeFormAdress.readOnly = false;
+  noticeFormAddress.addEventListener('blur', function () {
+    noticeFormAddress.readOnly = false;
   });
 
   noticeFormPlaceType.addEventListener('change', function () {
@@ -170,8 +170,5 @@
     window.util.synchronizeElementsValues(noticeFormTimeOut, noticeFormTimeIn);
   });
 
-  buttonReset.addEventListener('click', function () {
-    resetPage();
-    deactivatePage();
-  });
+  buttonReset.addEventListener('click', buttonResetClickHandler);
 })();

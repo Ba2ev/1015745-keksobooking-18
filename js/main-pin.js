@@ -17,37 +17,37 @@
 
   var setMainPinCoordinates = function () {
     var noticeForm = document.querySelector('.ad-form');
-    var noticeFormAdress = noticeForm.querySelector('#address');
+    var noticeFormAddress = noticeForm.querySelector('#address');
     var mainPinX = mapMainPin.style.left;
     var mainPinY = mapMainPin.style.top;
 
     var mainPinXValue = mainPinX.substr(0, mainPinX.length - 2);
     var mainPinYValue = mainPinY.substr(0, mainPinY.length - 2);
 
-    var mainPinSpikeX = Math.floor(Number(mainPinXValue) + window.params.mainPin.width / 2);
-    var mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.height + window.params.mainPin.spikeHeight);
+    var mainPinSpikeX = Math.floor(Number(mainPinXValue) + window.params.mainPin.WIDTH / 2);
+    var mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.HEIGHT + window.params.mainPin.SPIKE_HEIGHT);
 
     if (noticeForm.classList.contains('ad-form--disabled')) {
-      mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.height / 2);
+      mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.HEIGHT / 2);
     }
-    noticeFormAdress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
+    noticeFormAddress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
   };
 
   var validateMainPinCoordinates = function () {
     var noticeForm = document.querySelector('.ad-form');
-    var noticeFormAdress = noticeForm.querySelector('#address');
-    var mainPinCoordinates = noticeFormAdress.value.split(', ');
+    var noticeFormAddress = noticeForm.querySelector('#address');
+    var mainPinCoordinates = noticeFormAddress.value.split(', ');
     var mainPinX = mainPinCoordinates[0];
     var mainPinY = mainPinCoordinates[1];
 
-    if (mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < window.params.pin.positionTopLimit || mainPinY > window.params.pin.positionBottomLimit) {
-      noticeFormAdress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + window.params.pin.positionTopLimit + ' <= Y <= ' + window.params.pin.positionBottomLimit);
+    if (mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < window.params.pin.POSITION_TOP_LIMIT || mainPinY > window.params.pin.POSITION_BOTTOM_LIMIT) {
+      noticeFormAddress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + window.params.pin.POSITION_TOP_LIMIT + ' <= Y <= ' + window.params.pin.POSITION_BOTTOM_LIMIT);
     } else {
-      noticeFormAdress.setCustomValidity('');
+      noticeFormAddress.setCustomValidity('');
     }
   };
 
-  var dragDrobMainPin = function (evt) {
+  var dragDropMainPin = function (evt) {
     evt.preventDefault();
 
     var startCoords = {
@@ -57,7 +57,7 @@
 
     var dragged = false;
 
-    var onMouseMove = function (moveEvt) {
+    var mouseMoveHandler = function (moveEvt) {
       moveEvt.preventDefault();
       dragged = true;
 
@@ -71,11 +71,11 @@
         y: moveEvt.clientY
       };
 
-      var mainPinHalfWidth = Math.floor(window.params.mainPin.width / 2);
-      var mainPinHeight = window.params.mainPin.height + window.params.mainPin.spikeHeight;
+      var mainPinHalfWidth = Math.floor(window.params.mainPin.WIDTH / 2);
+      var mainPinHeight = window.params.mainPin.HEIGHT + window.params.mainPin.SPIKE_HEIGHT;
 
       if (((mapMainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mapMainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth)) {
-        if (((mapMainPin.offsetTop - shift.y) >= window.params.pin.positionTopLimit - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.positionBottomLimit - mainPinHeight)) {
+        if (((mapMainPin.offsetTop - shift.y) >= window.params.pin.POSITION_TOP_LIMIT - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.POSITION_BOTTOM_LIMIT - mainPinHeight)) {
           mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
           mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
 
@@ -84,31 +84,30 @@
       }
     };
 
-    var onMouseUp = function (upEvt) {
+    var mouseUpHandler = function (upEvt) {
       upEvt.preventDefault();
 
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('mousemove', mouseMoveHandler);
+      document.removeEventListener('mouseup', mouseUpHandler);
 
       if (dragged) {
-        var onClickPreventDefault = function (defaultEvt) {
+        var clickPreventDefaultHandler = function (defaultEvt) {
           defaultEvt.preventDefault();
-          mapMainPin.removeEventListener('click', onClickPreventDefault);
+          mapMainPin.removeEventListener('click', clickPreventDefaultHandler);
         };
-        mapMainPin.addEventListener('click', onClickPreventDefault);
+        mapMainPin.addEventListener('click', clickPreventDefaultHandler);
       }
       validateMainPinCoordinates();
     };
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mousemove', mouseMoveHandler);
+    document.addEventListener('mouseup', mouseUpHandler);
   };
 
   window.mainPin = {
     saveMainPinStartCoordinates: saveMainPinStartCoordinates,
     setMainPinStartCoordinates: setMainPinStartCoordinates,
     setMainPinCoordinates: setMainPinCoordinates,
-    validateMainPinCoordinates: validateMainPinCoordinates,
-    dragDrobMainPin: dragDrobMainPin,
+    dragDropMainPin: dragDropMainPin
   };
 })();

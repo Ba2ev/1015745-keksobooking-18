@@ -112,7 +112,7 @@
 
   var createPins = function (pins) {
     var mapPins = document.querySelector('.map__pins');
-    var fragment = window.util.createFragment(sortPins(pins), createAdHtml, window.params.pin.maxCount);
+    var fragment = window.util.createFragment(sortPins(pins), createAdHtml, window.params.pin.MAX_COUNT);
     mapPins.appendChild(fragment);
     window.mapFilter.activateMapFilter();
   };

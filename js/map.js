@@ -12,6 +12,6 @@
 
   window.map = {
     deactivateMap: deactivateMap,
-    activateMap: activateMap,
+    activateMap: activateMap
   };
 })();
