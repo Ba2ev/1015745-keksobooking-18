@@ -2,21 +2,23 @@
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-  var fileChooser = document.querySelector('.ad-form__upload input[type=file]');
+  var avatarChooser = document.querySelector('.ad-form__field input[type=file]');
+  var avatarPreviewImage = document.querySelector('.ad-form-header__preview img');
+  var photoChooser = document.querySelector('.ad-form__upload input[type=file]');
   var photoBlock = document.querySelector('.ad-form__photo');
 
   var createPhoto = function (photoSrc) {
     var adPhoto = document.createElement('IMG');
     adPhoto.classList.add('popup__photo');
     adPhoto.src = photoSrc;
-    adPhoto.width = 70;
-    adPhoto.height = 70;
+    adPhoto.width = window.params.form.placePhotoWidth;
+    adPhoto.height = window.params.form.placePhotoHeight;
     adPhoto.alt = 'Фотография жилья';
     return adPhoto;
   };
 
-  fileChooser.addEventListener('change', function () {
-    var file = fileChooser.files[0];
+  var chooserChangeHandler = function (chooser, renderPlace) {
+    var file = chooser.files[0];
     var fileName = file.name.toLowerCase();
 
     var matches = FILE_TYPES.some(function (it) {
@@ -27,10 +29,23 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        photoBlock.append(createPhoto(reader.result));
+        if (renderPlace.tagName.toLowerCase() === 'img') {
+          renderPlace.src = reader.result;
+        } else {
+          renderPlace.innerHTML = '';
+          renderPlace.append(createPhoto(reader.result));
+        }
       });
 
       reader.readAsDataURL(file);
     }
+  };
+
+  avatarChooser.addEventListener('change', function () {
+    chooserChangeHandler(avatarChooser, avatarPreviewImage);
+  });
+
+  photoChooser.addEventListener('change', function () {
+    chooserChangeHandler(photoChooser, photoBlock);
   });
 })();
