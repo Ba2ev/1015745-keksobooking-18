@@ -12,6 +12,8 @@
   var noticeFormFeaturesBox = noticeForm.querySelector('.features');
   var noticeFormFeatures = noticeFormFeaturesBox.querySelectorAll('[name=features]');
   var noticeFormDescription = noticeForm.querySelector('#description');
+  var avatarPreview = document.querySelector('.ad-form-header__preview img');
+  var adPhotoPreview = document.querySelector('.ad-form__photo');
 
   var activateNoticeForm = function () {
     noticeForm.classList.remove('ad-form--disabled');
@@ -34,6 +36,7 @@
     }
 
     window.params['formBaseValues'] = {
+      baseAvatar: avatarPreview.src,
       baseTitle: noticeFormTitle.value,
       basePlaceType: noticeFormPlaceType.value,
       basePricePerNight: noticeFormPricePerNight.value,
@@ -48,6 +51,7 @@
 
   var setNoticeFormBaseValues = function () {
     var noticeFormBaseValues = window.params.formBaseValues;
+    avatarPreview.src = noticeFormBaseValues.baseAvatar;
     noticeFormTitle.value = noticeFormBaseValues.baseTitle;
     noticeFormPlaceType.value = noticeFormBaseValues.basePlaceType;
     noticeFormPricePerNight.value = noticeFormBaseValues.basePricePerNight;
@@ -60,6 +64,8 @@
     for (var i = 0; i < noticeFormFeatures.length; i++) {
       noticeFormFeatures[i].checked = noticeFormBaseValues.baseFeaturesStatuses[i];
     }
+
+    adPhotoPreview.innerHTML = '';
   };
 
   var setMinPriceForPlaceType = function () {

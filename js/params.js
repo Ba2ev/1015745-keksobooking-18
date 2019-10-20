@@ -31,7 +31,9 @@
       bungaloMinPrice: 0,
       flatMinPrice: 1000,
       houseMinPrice: 5000,
-      palaceMinPrice: 10000
+      palaceMinPrice: 10000,
+      placePhotoWidth: 70,
+      placePhotoHeight: 70,
     },
     keyCode: {
       esc: 27
