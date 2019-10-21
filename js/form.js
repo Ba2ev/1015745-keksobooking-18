@@ -31,6 +31,7 @@
 
   var saveNoticeFormBaseValues = function () {
     var featuresStatuses = [];
+
     for (var i = 0; i < noticeFormFeatures.length; i++) {
       featuresStatuses.push(noticeFormFeatures[i].checked);
     }

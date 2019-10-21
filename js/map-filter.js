@@ -58,11 +58,7 @@
   };
 
   var getCheckedFeatures = function () {
-    var checkedFeatures = [];
-    for (var i = 0; i < mapFilterFeatures.length; i++) {
-      checkedFeatures.push(mapFilterFeatures[i]);
-    }
-    return checkedFeatures.slice().filter(function (feature) {
+    return Array.from(mapFilterFeatures).slice().filter(function (feature) {
       return feature.checked === true;
     });
   };

@@ -10,13 +10,7 @@
 
     if (target) {
       var adPins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
-      var mapAdPins = [];
-
-      for (var i = 0; i < adPins.length; i++) {
-        mapAdPins.push(adPins[i]);
-      }
-
-      var currentIndex = mapAdPins.indexOf(target);
+      var currentIndex = Array.from(adPins).indexOf(target);
       window.card.renderCard(window.data[currentIndex]);
 
       if (mapCard) {
