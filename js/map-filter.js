@@ -11,9 +11,9 @@
 
   var saveMapFilterDefaultParameters = function () {
     var featuresStatuses = [];
-    for (var i = 0; i < mapFilterFeatures.length; i++) {
-      featuresStatuses.push(mapFilterFeatures[i].checked);
-    }
+    mapFilterFeatures.forEach(function (item) {
+      featuresStatuses.push(item.checked);
+    });
 
     window.params['filterDefaultParameters'] = {
       defaultPlaceType: mapFilterPlaceType.value,
@@ -31,12 +31,16 @@
     mapFilterRoomNumbers.value = filterDefaultParameters.defaultRoomNumbers;
     mapFilterCapacities.value = filterDefaultParameters.defaultCapacities;
 
-    for (var i = 0; i < mapFilterFeatures.length; i++) {
-      mapFilterFeatures[i].checked = filterDefaultParameters.defaultFeaturesStatuses[i];
-    }
+    mapFilterFeatures.forEach(function (item, index) {
+      item.checked = filterDefaultParameters.defaultFeaturesStatuses[index];
+    });
   };
 
   var isMapFilterDefaultParameters = function () {
+    var isDefaultMapFilterFeatures = Array.prototype.slice.call(mapFilterFeatures).some(function (item, index) {
+      return item.checked !== window.params.filterDefaultParameters.defaultFeaturesStatuses[index];
+    });
+
     if (mapFilterPlaceType.value !== window.params.filterDefaultParameters.defaultPlaceType) {
       return false;
     }
@@ -49,33 +53,32 @@
     if (mapFilterCapacities.value !== window.params.filterDefaultParameters.defaultCapacities) {
       return false;
     }
-    for (var i = 0; i < mapFilterFeatures.length; i++) {
-      if (mapFilterFeatures[i].checked !== window.params.filterDefaultParameters.defaultFeaturesStatuses[i]) {
-        return false;
-      }
+    if (!isDefaultMapFilterFeatures) {
+      return false;
     }
     return true;
   };
 
   var getCheckedFeatures = function () {
-    return Array.from(mapFilterFeatures).slice().filter(function (feature) {
+
+    return Array.prototype.slice.call(mapFilterFeatures).filter(function (feature) {
       return feature.checked === true;
     });
   };
 
   var deactivateMapFilter = function () {
     mapFilterFeaturesGroup.setAttribute('disabled', 'disabled');
-    for (var i = 0; i < mapFilterGroups.length; i++) {
-      mapFilterGroups[i].setAttribute('disabled', 'disabled');
-    }
+    mapFilterGroups.forEach(function (item) {
+      item.setAttribute('disabled', 'disabled');
+    });
     setMapFilterDefaultParameters();
   };
 
   var activateMapFilter = function () {
     mapFilterFeaturesGroup.removeAttribute('disabled');
-    for (var i = 0; i < mapFilterGroups.length; i++) {
-      mapFilterGroups[i].removeAttribute('disabled');
-    }
+    mapFilterGroups.forEach(function (item) {
+      item.removeAttribute('disabled');
+    });
   };
 
   window.mapFilter = {

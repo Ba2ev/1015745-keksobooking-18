@@ -17,24 +17,22 @@
 
   var activateNoticeForm = function () {
     noticeForm.classList.remove('ad-form--disabled');
-    for (var i = 0; i < noticeFormGroups.length; i++) {
-      noticeFormGroups[i].removeAttribute('disabled');
-    }
+    noticeFormGroups.forEach(function (item) {
+      item.removeAttribute('disabled');
+    });
   };
 
   var deactivateNoticeForm = function () {
     noticeForm.classList.add('ad-form--disabled');
-    for (var i = 0; i < noticeFormGroups.length; i++) {
-      noticeFormGroups[i].setAttribute('disabled', 'disabled');
-    }
+    noticeFormGroups.forEach(function (item) {
+      item.setAttribute('disabled', 'disabled');
+    });
   };
 
   var saveNoticeFormBaseValues = function () {
-    var featuresStatuses = [];
-
-    for (var i = 0; i < noticeFormFeatures.length; i++) {
-      featuresStatuses.push(noticeFormFeatures[i].checked);
-    }
+    var featuresStatuses = Array.prototype.slice.call(noticeFormFeatures).map(function (item) {
+      return item.checked;
+    });
 
     window.params['formBaseValues'] = {
       baseAvatar: avatarPreview.src,
@@ -62,9 +60,9 @@
     noticeFormCapacities.value = noticeFormBaseValues.baseCapacities;
     noticeFormDescription.value = noticeFormBaseValues.baseDescription;
 
-    for (var i = 0; i < noticeFormFeatures.length; i++) {
-      noticeFormFeatures[i].checked = noticeFormBaseValues.baseFeaturesStatuses[i];
-    }
+    noticeFormFeatures.forEach(function (item, index) {
+      item.checked = noticeFormBaseValues.baseFeaturesStatuses[index];
+    });
 
     adPhotoPreview.innerHTML = '';
   };

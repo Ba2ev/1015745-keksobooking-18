@@ -10,7 +10,7 @@
 
     if (target) {
       var adPins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
-      var currentIndex = Array.from(adPins).indexOf(target);
+      var currentIndex = Array.prototype.slice.call(adPins).indexOf(target);
       window.card.renderCard(window.data[currentIndex]);
 
       if (mapCard) {
@@ -67,12 +67,9 @@
 
   var isFeaturesSimilar = function (ad) {
     var checkedFeatures = window.mapFilter.getCheckedFeatures();
-    for (var i = 0; i < checkedFeatures.length; i++) {
-      if (ad.offer.features.indexOf(checkedFeatures[i].value) < 0) {
-        return false;
-      }
-    }
-    return true;
+    return checkedFeatures.every(function (item) {
+      return ad.offer.features.indexOf(item.value) >= 0;
+    });
   };
 
   var isSimilar = function (ad) {
@@ -118,10 +115,9 @@
   var clearPins = function () {
     var mapPins = document.querySelector('.map__pins');
     var renderedPins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-    for (var i = 0; i < renderedPins.length; i++) {
-      renderedPins[i].remove();
-    }
+    renderedPins.forEach(function (item) {
+      item.remove();
+    });
   };
 
   window.pin = {
