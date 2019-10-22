@@ -2,7 +2,7 @@
 (function () {
   var map = document.querySelector('.map');
   var mapMainPin = document.querySelector('.map__pin--main');
-  var mapPins = document.querySelector('.map__pins');
+
   var mapFilter = document.querySelector('.map__filters');
   var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
   var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
@@ -20,6 +20,18 @@
   var noticeFormTimeOut = noticeForm.querySelector('#timeout');
   var buttonReset = noticeForm.querySelector('.ad-form__reset');
 
+  var avatarChooser = document.querySelector('.ad-form__field input[type=file]');
+  var avatarPreviewImage = document.querySelector('.ad-form-header__preview img');
+  var photoChooser = document.querySelector('.ad-form__upload input[type=file]');
+  var photoBlock = document.querySelector('.ad-form__photo');
+
+  var windowLoadHandler = function () {
+    window.mainPin.saveMainPinStartCoordinates();
+    window.form.saveNoticeFormBaseValues();
+    deactivatePage();
+    window.removeEventListener('load', windowLoadHandler);
+  };
+
   var deactivatePage = function () {
     window.map.deactivateMap();
     window.form.deactivateNoticeForm();
@@ -29,30 +41,85 @@
   var activatePage = function () {
     window.map.activateMap();
     window.pin.renderPins();
-    window.form.setMinPriceForPlaceType();
+    activateMapFilterListeners();
     window.form.activateNoticeForm();
+    window.form.setMinPriceForPlaceType();
+    activateFormListeners();
   };
 
   var resetPage = function () {
     window.mapFilter.setMapFilterDefaultParameters();
+    deactivateMapFilterListeners();
     window.mainPin.setMainPinStartCoordinates();
     window.mainPin.setMainPinCoordinates();
-    window.pin.clearPins();
     window.card.closeAdCard();
+    window.pin.clearPins();
     window.form.setNoticeFormBaseValues();
+    deactivateFormListeners();
+  };
+
+  var activateFormListeners = function () {
+    avatarChooser.addEventListener('change', avatarChooserChangeHandler);
+    noticeFormTitle.addEventListener('change', noticeFormElementChangeHandler);
+    noticeFormAddress.addEventListener('focus', noticeFormAddressFocusHandler);
+    noticeFormAddress.addEventListener('blur', noticeFormAddressBlurHandler);
+    noticeFormPlaceType.addEventListener('change', noticeFormPlaceTypeChangeHandler);
+    noticeFormRoomNumbers.addEventListener('change', noticeFormElementChangeHandler);
+    noticeFormCapacities.addEventListener('change', noticeFormElementChangeHandler);
+    noticeFormTimeIn.addEventListener('change', noticeFormTimesChangeHandler);
+    noticeFormTimeOut.addEventListener('change', noticeFormTimesChangeHandler);
+    photoChooser.addEventListener('change', photoChooserChangeHandler);
+    noticeForm.addEventListener('submit', noticeFormSubmitHandler);
+    buttonReset.addEventListener('click', buttonResetClickHandler);
+  };
+
+  var deactivateFormListeners = function () {
+    avatarChooser.removeEventListener('change', avatarChooserChangeHandler);
+    noticeFormTitle.removeEventListener('change', noticeFormElementChangeHandler);
+    noticeFormAddress.removeEventListener('focus', noticeFormAddressFocusHandler);
+    noticeFormAddress.removeEventListener('blur', noticeFormAddressBlurHandler);
+    noticeFormPlaceType.removeEventListener('change', noticeFormPlaceTypeChangeHandler);
+    noticeFormRoomNumbers.removeEventListener('change', noticeFormElementChangeHandler);
+    noticeFormCapacities.removeEventListener('change', noticeFormElementChangeHandler);
+    noticeFormTimeIn.removeEventListener('change', noticeFormTimesChangeHandler);
+    noticeFormTimeOut.removeEventListener('change', noticeFormTimesChangeHandler);
+    photoChooser.removeEventListener('change', photoChooserChangeHandler);
+    noticeForm.removeEventListener('submit', noticeFormSubmitHandler);
+    buttonReset.removeEventListener('click', buttonResetClickHandler);
+  };
+
+  var noticeFormAddressFocusHandler = function () {
+    noticeFormAddress.readOnly = true;
+  };
+
+  var noticeFormAddressBlurHandler = function () {
+    noticeFormAddress.readOnly = false;
+  };
+
+  var noticeFormTimesChangeHandler = function () {
+    window.util.synchronizeElementsValues(noticeFormTimeIn, noticeFormTimeOut);
+  };
+
+  var noticeFormElementChangeHandler = function () {
+    window.form.validateNoticeForm();
+  };
+
+  var noticeFormPlaceTypeChangeHandler = function () {
+    window.form.setMinPriceForPlaceType();
+  };
+
+  var avatarChooserChangeHandler = function () {
+    window.photoChooserChangeHandler(avatarChooser, avatarPreviewImage);
+  };
+
+  var photoChooserChangeHandler = function () {
+    window.photoChooserChangeHandler(photoChooser, photoBlock);
   };
 
   var updatePins = function () {
     window.card.closeAdCard();
     window.pin.clearPins();
     window.pin.renderPins();
-  };
-
-  var windowLoadHandler = function () {
-    window.mainPin.saveMainPinStartCoordinates();
-    window.mainPin.setMainPinCoordinates();
-    window.form.saveNoticeFormBaseValues();
-    deactivatePage();
   };
 
   var mainPinMouseDownHandler = function (evt) {
@@ -68,6 +135,26 @@
     if (evt.keyCode === window.params.keyCode.ENTER) {
       mainPinMouseDownHandler(evt);
     }
+  };
+
+  var activateMapFilterListeners = function () {
+    mapFilterPlaceType.addEventListener('change', mapFilterElementChangeHandler);
+    mapFilterPricePerNight.addEventListener('change', mapFilterElementChangeHandler);
+    mapFilterRoomNumbers.addEventListener('change', mapFilterElementChangeHandler);
+    mapFilterCapacities.addEventListener('change', mapFilterElementChangeHandler);
+    mapFilterFeatures.addEventListener('click', mapFilterFeaturesClickHandler);
+    mapFilterFeatures.addEventListener('keydown', mapFilterFeaturesPressSpaceHandler);
+    mapFilterFeatures.addEventListener('keydown', mapFilterFeaturesPressEnterHandler);
+  };
+
+  var deactivateMapFilterListeners = function () {
+    mapFilterPlaceType.removeEventListener('change', mapFilterElementChangeHandler);
+    mapFilterPricePerNight.removeEventListener('change', mapFilterElementChangeHandler);
+    mapFilterRoomNumbers.removeEventListener('change', mapFilterElementChangeHandler);
+    mapFilterCapacities.removeEventListener('change', mapFilterElementChangeHandler);
+    mapFilterFeatures.removeEventListener('click', mapFilterFeaturesClickHandler);
+    mapFilterFeatures.removeEventListener('keydown', mapFilterFeaturesPressSpaceHandler);
+    mapFilterFeatures.removeEventListener('keydown', mapFilterFeaturesPressEnterHandler);
   };
 
   var mapFilterFeaturesClickHandler = function (evt) {
@@ -90,6 +177,10 @@
     }
   };
 
+  var mapFilterElementChangeHandler = function () {
+    window.debounce(updatePins);
+  };
+
   var noticeFormSubmitHandler = function (evt) {
     window.backend.save(new FormData(noticeForm), function () {
       window.showSuccess();
@@ -110,65 +201,4 @@
 
   mapMainPin.addEventListener('keydown', mainPinPressEnterHandler);
 
-  mapPins.addEventListener('click', function (evt) {
-    window.pin.onPinClick(evt);
-  });
-
-  mapFilterPlaceType.addEventListener('change', function () {
-    window.debounce(updatePins);
-  });
-
-  mapFilterPricePerNight.addEventListener('change', function () {
-    window.debounce(updatePins);
-  });
-
-  mapFilterRoomNumbers.addEventListener('change', function () {
-    window.debounce(updatePins);
-  });
-
-  mapFilterCapacities.addEventListener('change', function () {
-    window.debounce(updatePins);
-  });
-
-  mapFilterFeatures.addEventListener('click', mapFilterFeaturesClickHandler);
-
-  mapFilterFeatures.addEventListener('keydown', mapFilterFeaturesPressSpaceHandler);
-
-  mapFilterFeatures.addEventListener('keydown', mapFilterFeaturesPressEnterHandler);
-
-  noticeForm.addEventListener('submit', noticeFormSubmitHandler);
-
-  noticeFormTitle.addEventListener('change', function () {
-    window.form.validateNoticeForm();
-  });
-
-  noticeFormAddress.addEventListener('keydown', function () {
-    noticeFormAddress.readOnly = true;
-  });
-
-  noticeFormAddress.addEventListener('blur', function () {
-    noticeFormAddress.readOnly = false;
-  });
-
-  noticeFormPlaceType.addEventListener('change', function () {
-    window.form.setMinPriceForPlaceType();
-  });
-
-  noticeFormRoomNumbers.addEventListener('change', function () {
-    window.form.validateNoticeForm();
-  });
-
-  noticeFormCapacities.addEventListener('change', function () {
-    window.form.validateNoticeForm();
-  });
-
-  noticeFormTimeIn.addEventListener('change', function () {
-    window.util.synchronizeElementsValues(noticeFormTimeIn, noticeFormTimeOut);
-  });
-
-  noticeFormTimeOut.addEventListener('change', function () {
-    window.util.synchronizeElementsValues(noticeFormTimeOut, noticeFormTimeIn);
-  });
-
-  buttonReset.addEventListener('click', buttonResetClickHandler);
 })();

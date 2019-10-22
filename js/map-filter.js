@@ -37,8 +37,8 @@
   };
 
   var isMapFilterDefaultParameters = function () {
-    var isDefaultMapFilterFeatures = Array.prototype.slice.call(mapFilterFeatures).some(function (item, index) {
-      return item.checked !== window.params.filterDefaultParameters.defaultFeaturesStatuses[index];
+    var isDefaultMapFilterFeatures = Array.prototype.slice.call(mapFilterFeatures).every(function (item, index) {
+      return item.checked === window.params.filterDefaultParameters.defaultFeaturesStatuses[index];
     });
 
     if (mapFilterPlaceType.value !== window.params.filterDefaultParameters.defaultPlaceType) {

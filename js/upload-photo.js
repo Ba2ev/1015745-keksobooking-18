@@ -2,11 +2,6 @@
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
-  var avatarChooser = document.querySelector('.ad-form__field input[type=file]');
-  var avatarPreviewImage = document.querySelector('.ad-form-header__preview img');
-  var photoChooser = document.querySelector('.ad-form__upload input[type=file]');
-  var photoBlock = document.querySelector('.ad-form__photo');
-
   var createPhoto = function (photoSrc) {
     var adPhoto = document.createElement('IMG');
     adPhoto.classList.add('popup__photo');
@@ -17,7 +12,7 @@
     return adPhoto;
   };
 
-  var photoChooserChangeHandler = function (chooser, renderPlace) {
+  window.photoChooserChangeHandler = function (chooser, renderPlace) {
     var file = chooser.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -41,11 +36,4 @@
     }
   };
 
-  avatarChooser.addEventListener('change', function () {
-    photoChooserChangeHandler(avatarChooser, avatarPreviewImage);
-  });
-
-  photoChooser.addEventListener('change', function () {
-    photoChooserChangeHandler(photoChooser, photoBlock);
-  });
 })();

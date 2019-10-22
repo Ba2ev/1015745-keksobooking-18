@@ -1,11 +1,11 @@
 'use strict';
 (function () {
+  var mapPins = document.querySelector('.map__pins');
   var mapFilter = document.querySelector('.map__filters');
   var unsortedValue = 'any';
 
   var onPinClick = function (evt) {
     var mapCard = document.querySelector('.map__card.popup');
-    var mapPins = document.querySelector('.map__pins');
     var target = evt.target.closest('.map__pin:not(.map__pin--main)');
 
     if (target) {
@@ -102,7 +102,6 @@
   };
 
   var createPins = function (pins) {
-    var mapPins = document.querySelector('.map__pins');
     var fragment = window.util.createFragment(sortPins(pins), createAdHtml, window.params.pin.MAX_COUNT);
     mapPins.appendChild(fragment);
     window.mapFilter.activateMapFilter();
@@ -110,11 +109,16 @@
 
   var renderPins = function () {
     window.backend.load(createPins, window.showError);
+
+    mapPins.addEventListener('click', onPinClick);
   };
 
   var clearPins = function () {
-    var mapPins = document.querySelector('.map__pins');
+
     var renderedPins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+    mapPins.removeEventListener('click', onPinClick);
+
     renderedPins.forEach(function (item) {
       item.remove();
     });
@@ -122,7 +126,6 @@
 
   window.pin = {
     renderPins: renderPins,
-    clearPins: clearPins,
-    onPinClick: onPinClick
+    clearPins: clearPins
   };
 })();
