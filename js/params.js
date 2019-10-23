@@ -44,6 +44,8 @@
     server: {
       URL_LOAD: 'https://js.dump.academy/keksobooking/data',
       URL_SAVE: 'https://js.dump.academy/keksobooking',
+      METHOD_LOAD: 'GET',
+      METHOD_SAVE: 'POST',
       STATUS_SUCCESS: 200,
       TIMEOUT_LIMIT: 5000,
       ERROR_CONNECTION_MESSAGE: 'Произошла ошибка соединения'

@@ -2,6 +2,13 @@
 (function () {
   var mapPins = document.querySelector('.map__pins');
   var mapFilter = document.querySelector('.map__filters');
+  var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
+  var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
+  var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
+  var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
+  var mapPinTemplate = document.querySelector('#pin')
+    .content
+    .querySelector('.map__pin');
   var UNSORTED_VALUE = 'any';
   var PRICE_HIGHT_VALUE = 50000;
   var PRICE_MIDDLE_VALUE = 10000;
@@ -23,7 +30,6 @@
   };
 
   var isPlaceTypeSimilar = function (ad) {
-    var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
     if (mapFilterPlaceType.value !== UNSORTED_VALUE) {
       return ad.offer.type === mapFilterPlaceType.value;
     }
@@ -31,7 +37,6 @@
   };
 
   var isRoomNumbersSimilar = function (ad) {
-    var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
     if (mapFilterRoomNumbers.value !== UNSORTED_VALUE) {
       return ad.offer.rooms === Number(mapFilterRoomNumbers.value);
     }
@@ -39,7 +44,6 @@
   };
 
   var isCapacitiesSimilar = function (ad) {
-    var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
     if (mapFilterCapacities.value !== UNSORTED_VALUE) {
       return ad.offer.guests === Number(mapFilterCapacities.value);
     }
@@ -47,7 +51,6 @@
   };
 
   var isPricePerNightSimilar = function (ad) {
-    var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
     if (mapFilterPricePerNight.value !== UNSORTED_VALUE) {
 
       var currentValue = '';
@@ -91,11 +94,7 @@
   };
 
   var createAdHtml = function (ad) {
-    var mapPinTemplate = document.querySelector('#pin')
-      .content
-      .querySelector('.map__pin');
     var adElement = mapPinTemplate.cloneNode(true);
-
     adElement.style = 'left: ' + ad.location.x + 'px; top: ' + ad.location.y + 'px';
     adElement.querySelector('IMG').src = ad.author.avatar;
     adElement.querySelector('IMG').alt = ad.offer.title;

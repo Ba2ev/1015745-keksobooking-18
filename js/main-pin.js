@@ -2,6 +2,8 @@
 (function () {
   var map = document.querySelector('.map');
   var mapMainPin = document.querySelector('.map__pin--main');
+  var noticeForm = document.querySelector('.ad-form');
+  var noticeFormAddress = noticeForm.querySelector('#address');
 
   var saveStartCoordinates = function () {
     var mainPinX = mapMainPin.style.left;
@@ -16,8 +18,6 @@
   };
 
   var setCoordinates = function () {
-    var noticeForm = document.querySelector('.ad-form');
-    var noticeFormAddress = noticeForm.querySelector('#address');
     var mainPinX = mapMainPin.style.left;
     var mainPinY = mapMainPin.style.top;
 
@@ -34,13 +34,11 @@
   };
 
   var validateMainPinCoordinates = function () {
-    var noticeForm = document.querySelector('.ad-form');
-    var noticeFormAddress = noticeForm.querySelector('#address');
     var mainPinCoordinates = noticeFormAddress.value.split(', ');
     var mainPinX = mainPinCoordinates[0];
     var mainPinY = mainPinCoordinates[1];
-
-    if (mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < window.params.pin.POSITION_TOP_LIMIT || mainPinY > window.params.pin.POSITION_BOTTOM_LIMIT) {
+    var isOutLimits = mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < window.params.pin.POSITION_TOP_LIMIT || mainPinY > window.params.pin.POSITION_BOTTOM_LIMIT;
+    if (isOutLimits) {
       noticeFormAddress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + window.params.pin.POSITION_TOP_LIMIT + ' <= Y <= ' + window.params.pin.POSITION_BOTTOM_LIMIT);
     } else {
       noticeFormAddress.setCustomValidity('');
@@ -74,13 +72,13 @@
       var mainPinHalfWidth = Math.floor(window.params.mainPin.WIDTH / 2);
       var mainPinHeight = window.params.mainPin.HEIGHT + window.params.mainPin.SPIKE_HEIGHT;
 
-      if (((mapMainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mapMainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth)) {
-        if (((mapMainPin.offsetTop - shift.y) >= window.params.pin.POSITION_TOP_LIMIT - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.POSITION_BOTTOM_LIMIT - mainPinHeight)) {
-          mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
-          mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
+      var isInHorizontalLimits = ((mapMainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mapMainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth);
+      var isInVerticalLimits = ((mapMainPin.offsetTop - shift.y) >= window.params.pin.POSITION_TOP_LIMIT - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.POSITION_BOTTOM_LIMIT - mainPinHeight);
+      if (isInHorizontalLimits && isInVerticalLimits) {
+        mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
+        mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
 
-          setCoordinates();
-        }
+        setCoordinates();
       }
     };
 

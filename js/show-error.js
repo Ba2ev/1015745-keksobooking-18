@@ -1,5 +1,9 @@
 'use strict';
 (function () {
+  var errorTemplate = document.querySelector('#error')
+    .content
+    .querySelector('.error');
+
   var errorPressESCHandler = function (evt) {
     if (evt.keyCode === window.params.keyCode.ESC) {
       closeError();
@@ -24,9 +28,6 @@
   };
 
   window.showError = function (text) {
-    var errorTemplate = document.querySelector('#error')
-      .content
-      .querySelector('.error');
     var errorElement = errorTemplate.cloneNode(true);
     var promo = document.querySelector('.promo');
 
