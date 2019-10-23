@@ -29,7 +29,8 @@
       HOUSE_MIN_PRICE: 5000,
       PALACE_MIN_PRICE: 10000,
       PLACE_PHOTO_WIDTH: 70,
-      PLACE_PHOTO_HEIGHT: 70
+      PLACE_PHOTO_HEIGHT: 70,
+      NO_GUESTS_LIMIT: 100
     },
     keyCode: {
       ESC: 27,
@@ -42,7 +43,10 @@
     },
     server: {
       URL_LOAD: 'https://js.dump.academy/keksobooking/data',
-      URL_SAVE: 'https://js.dump.academy/keksobooking'
+      URL_SAVE: 'https://js.dump.academy/keksobooking',
+      STATUS_SUCCESS: 200,
+      TIMEOUT_LIMIT: 5000,
+      ERROR_CONNECTION_MESSAGE: 'Произошла ошибка соединения'
     }
   };
 })();

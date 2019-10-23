@@ -11,7 +11,7 @@
   };
 
   window.map = {
-    deactivateMap: deactivateMap,
-    activateMap: activateMap
+    deactivate: deactivateMap,
+    activate: activateMap
   };
 })();

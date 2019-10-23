@@ -2,7 +2,9 @@
 (function () {
   var mapPins = document.querySelector('.map__pins');
   var mapFilter = document.querySelector('.map__filters');
-  var unsortedValue = 'any';
+  var UNSORTED_VALUE = 'any';
+  var PRICE_HIGHT_VALUE = 50000;
+  var PRICE_MIDDLE_VALUE = 10000;
 
   var onPinClick = function (evt) {
     var mapCard = document.querySelector('.map__card.popup');
@@ -11,18 +13,18 @@
     if (target) {
       var adPins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
       var currentIndex = Array.prototype.slice.call(adPins).indexOf(target);
-      window.card.renderCard(window.data[currentIndex]);
+      window.card.render(window.data[currentIndex]);
 
       if (mapCard) {
-        window.card.closeAdCard();
+        window.card.close();
       }
-      window.card.openAdCard();
+      window.card.open();
     }
   };
 
   var isPlaceTypeSimilar = function (ad) {
     var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
-    if (mapFilterPlaceType.value !== unsortedValue) {
+    if (mapFilterPlaceType.value !== UNSORTED_VALUE) {
       return ad.offer.type === mapFilterPlaceType.value;
     }
     return true;
@@ -30,7 +32,7 @@
 
   var isRoomNumbersSimilar = function (ad) {
     var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
-    if (mapFilterRoomNumbers.value !== unsortedValue) {
+    if (mapFilterRoomNumbers.value !== UNSORTED_VALUE) {
       return ad.offer.rooms === Number(mapFilterRoomNumbers.value);
     }
     return true;
@@ -38,7 +40,7 @@
 
   var isCapacitiesSimilar = function (ad) {
     var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
-    if (mapFilterCapacities.value !== unsortedValue) {
+    if (mapFilterCapacities.value !== UNSORTED_VALUE) {
       return ad.offer.guests === Number(mapFilterCapacities.value);
     }
     return true;
@@ -46,13 +48,13 @@
 
   var isPricePerNightSimilar = function (ad) {
     var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
-    if (mapFilterPricePerNight.value !== unsortedValue) {
+    if (mapFilterPricePerNight.value !== UNSORTED_VALUE) {
 
       var currentValue = '';
 
-      if (ad.offer.price >= 50000) {
+      if (ad.offer.price >= PRICE_HIGHT_VALUE) {
         currentValue = 'high';
-      } else if (ad.offer.price >= 10000) {
+      } else if (ad.offer.price >= PRICE_MIDDLE_VALUE) {
         currentValue = 'middle';
       } else {
         currentValue = 'low';
@@ -78,7 +80,7 @@
 
   var sortPins = function (pins) {
 
-    if (window.mapFilter.isMapFilterDefaultParameters()) {
+    if (window.mapFilter.isDefaultParameters()) {
       window.data = pins;
       return pins;
     } else {
@@ -104,7 +106,7 @@
   var createPins = function (pins) {
     var fragment = window.util.createFragment(sortPins(pins), createAdHtml, window.params.pin.MAX_COUNT);
     mapPins.appendChild(fragment);
-    window.mapFilter.activateMapFilter();
+    window.mapFilter.activate();
   };
 
   var renderPins = function () {
@@ -125,7 +127,7 @@
   };
 
   window.pin = {
-    renderPins: renderPins,
-    clearPins: clearPins
+    render: renderPins,
+    clear: clearPins
   };
 })();

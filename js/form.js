@@ -98,9 +98,9 @@
 
   var validateCapacityNoGuests = function () {
 
-    if (Number(noticeFormCapacities.value) === 0 && Number(noticeFormRoomNumbers.value) !== 100) {
+    if (Number(noticeFormCapacities.value) === 0 && Number(noticeFormRoomNumbers.value) !== window.params.form.NO_GUESTS_LIMIT) {
       noticeFormCapacities.setCustomValidity('Данный параметр доступен только для 100 комнат');
-    } else if (Number(noticeFormCapacities.value) !== 0 && Number(noticeFormRoomNumbers.value) === 100) {
+    } else if (Number(noticeFormCapacities.value) !== 0 && Number(noticeFormRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT) {
       noticeFormCapacities.setCustomValidity('Данное кол-во комнат доступно не для гостей');
     } else {
       noticeFormCapacities.setCustomValidity('');
@@ -119,17 +119,17 @@
   var validateNoticeForm = function () {
     validateTitleLength();
     validateCapacityLimit();
-    if (Number(noticeFormCapacities.value) === 0 || Number(noticeFormRoomNumbers.value) === 100) {
+    if (Number(noticeFormCapacities.value) === 0 || Number(noticeFormRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT) {
       validateCapacityNoGuests();
     }
   };
 
   window.form = {
-    activateNoticeForm: activateNoticeForm,
-    deactivateNoticeForm: deactivateNoticeForm,
-    saveNoticeFormBaseValues: saveNoticeFormBaseValues,
-    setNoticeFormBaseValues: setNoticeFormBaseValues,
+    activate: activateNoticeForm,
+    deactivate: deactivateNoticeForm,
+    saveBaseValues: saveNoticeFormBaseValues,
+    setBaseValues: setNoticeFormBaseValues,
     setMinPriceForPlaceType: setMinPriceForPlaceType,
-    validateNoticeForm: validateNoticeForm
+    validate: validateNoticeForm
   };
 })();

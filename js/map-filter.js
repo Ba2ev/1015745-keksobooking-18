@@ -82,11 +82,11 @@
   };
 
   window.mapFilter = {
-    activateMapFilter: activateMapFilter,
-    deactivateMapFilter: deactivateMapFilter,
-    saveMapFilterDefaultParameters: saveMapFilterDefaultParameters,
-    setMapFilterDefaultParameters: setMapFilterDefaultParameters,
-    isMapFilterDefaultParameters: isMapFilterDefaultParameters,
+    activate: activateMapFilter,
+    deactivate: deactivateMapFilter,
+    saveDefaultParameters: saveMapFilterDefaultParameters,
+    setDefaultParameters: setMapFilterDefaultParameters,
+    isDefaultParameters: isMapFilterDefaultParameters,
     getCheckedFeatures: getCheckedFeatures
   };
 })();

@@ -26,35 +26,35 @@
   var photoBlock = document.querySelector('.ad-form__photo');
 
   var windowLoadHandler = function () {
-    window.mainPin.saveMainPinStartCoordinates();
-    window.form.saveNoticeFormBaseValues();
+    window.mainPin.saveStartCoordinates();
+    window.form.saveBaseValues();
     deactivatePage();
     window.removeEventListener('load', windowLoadHandler);
   };
 
   var deactivatePage = function () {
-    window.map.deactivateMap();
-    window.form.deactivateNoticeForm();
-    window.mainPin.setMainPinCoordinates();
+    window.map.deactivate();
+    window.form.deactivate();
+    window.mainPin.setCoordinates();
   };
 
   var activatePage = function () {
-    window.map.activateMap();
-    window.pin.renderPins();
+    window.map.activate();
+    window.pin.render();
     activateMapFilterListeners();
-    window.form.activateNoticeForm();
+    window.form.activate();
     window.form.setMinPriceForPlaceType();
     activateFormListeners();
   };
 
   var resetPage = function () {
-    window.mapFilter.setMapFilterDefaultParameters();
+    window.mapFilter.setDefaultParameters();
     deactivateMapFilterListeners();
-    window.mainPin.setMainPinStartCoordinates();
-    window.mainPin.setMainPinCoordinates();
-    window.card.closeAdCard();
-    window.pin.clearPins();
-    window.form.setNoticeFormBaseValues();
+    window.mainPin.setStartCoordinates();
+    window.mainPin.setCoordinates();
+    window.card.close();
+    window.pin.clear();
+    window.form.setBaseValues();
     deactivateFormListeners();
   };
 
@@ -101,7 +101,7 @@
   };
 
   var noticeFormElementChangeHandler = function () {
-    window.form.validateNoticeForm();
+    window.form.validate();
   };
 
   var noticeFormPlaceTypeChangeHandler = function () {
@@ -117,18 +117,18 @@
   };
 
   var updatePins = function () {
-    window.card.closeAdCard();
-    window.pin.clearPins();
-    window.pin.renderPins();
+    window.card.close();
+    window.pin.clear();
+    window.pin.render();
   };
 
   var mainPinMouseDownHandler = function (evt) {
     if (map.classList.contains('map--faded')) {
       activatePage();
     }
-    window.mapFilter.saveMapFilterDefaultParameters();
-    window.mainPin.setMainPinCoordinates();
-    window.mainPin.dragDropMainPin(evt);
+    window.mapFilter.saveDefaultParameters();
+    window.mainPin.setCoordinates();
+    window.mainPin.dragDrop(evt);
   };
 
   var mainPinPressEnterHandler = function (evt) {

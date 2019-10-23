@@ -42,7 +42,7 @@
     return adPhotoElement;
   };
 
-  var renderCard = function (ad) {
+  var renderAdCard = function (ad) {
     var mapFilter = document.querySelector('.map__filters-container');
     var cardElement = mapCardTemplate.cloneNode(true);
     var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHtml, 0);
@@ -65,8 +65,8 @@
   };
 
   window.card = {
-    renderCard: renderCard,
-    openAdCard: openAdCard,
-    closeAdCard: closeAdCard
+    render: renderAdCard,
+    open: openAdCard,
+    close: closeAdCard
   };
 })();

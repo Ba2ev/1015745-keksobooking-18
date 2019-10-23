@@ -3,19 +3,19 @@
   var map = document.querySelector('.map');
   var mapMainPin = document.querySelector('.map__pin--main');
 
-  var saveMainPinStartCoordinates = function () {
+  var saveStartCoordinates = function () {
     var mainPinX = mapMainPin.style.left;
     var mainPinY = mapMainPin.style.top;
     window.params.mainPin['startX'] = mainPinX;
     window.params.mainPin['startY'] = mainPinY;
   };
 
-  var setMainPinStartCoordinates = function () {
+  var setStartCoordinates = function () {
     mapMainPin.style.left = window.params.mainPin['startX'];
     mapMainPin.style.top = window.params.mainPin['startY'];
   };
 
-  var setMainPinCoordinates = function () {
+  var setCoordinates = function () {
     var noticeForm = document.querySelector('.ad-form');
     var noticeFormAddress = noticeForm.querySelector('#address');
     var mainPinX = mapMainPin.style.left;
@@ -47,7 +47,7 @@
     }
   };
 
-  var dragDropMainPin = function (evt) {
+  var dragDrop = function (evt) {
     evt.preventDefault();
 
     var startCoords = {
@@ -79,7 +79,7 @@
           mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
           mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
 
-          setMainPinCoordinates();
+          setCoordinates();
         }
       }
     };
@@ -105,9 +105,9 @@
   };
 
   window.mainPin = {
-    saveMainPinStartCoordinates: saveMainPinStartCoordinates,
-    setMainPinStartCoordinates: setMainPinStartCoordinates,
-    setMainPinCoordinates: setMainPinCoordinates,
-    dragDropMainPin: dragDropMainPin
+    saveStartCoordinates: saveStartCoordinates,
+    setStartCoordinates: setStartCoordinates,
+    setCoordinates: setCoordinates,
+    dragDrop: dragDrop
   };
 })();
