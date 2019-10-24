@@ -5,15 +5,8 @@
   var noticeFormTitle = noticeForm.querySelector('#title');
   var noticeFormPlaceType = noticeForm.querySelector('#type');
   var noticeFormPricePerNight = noticeForm.querySelector('#price');
-  var noticeFormTimeIn = noticeForm.querySelector('#timein');
-  var noticeFormTimeOut = noticeForm.querySelector('#timeout');
   var noticeFormRoomNumbers = noticeForm.querySelector('#room_number');
   var noticeFormCapacities = noticeForm.querySelector('#capacity');
-  var noticeFormFeaturesBox = noticeForm.querySelector('.features');
-  var noticeFormFeatures = noticeFormFeaturesBox.querySelectorAll('[name=features]');
-  var noticeFormDescription = noticeForm.querySelector('#description');
-  var avatarPreview = document.querySelector('.ad-form-header__preview img');
-  var adPhotoPreview = document.querySelector('.ad-form__photo');
 
   var activateNoticeForm = function () {
     noticeForm.classList.remove('ad-form--disabled');
@@ -27,44 +20,6 @@
     noticeFormGroups.forEach(function (item) {
       item.setAttribute('disabled', 'disabled');
     });
-  };
-
-  var saveNoticeFormBaseValues = function () {
-    var featuresStatuses = Array.prototype.slice.call(noticeFormFeatures).map(function (item) {
-      return item.checked;
-    });
-
-    window.params['formBaseValues'] = {
-      baseAvatar: avatarPreview.src,
-      baseTitle: noticeFormTitle.value,
-      basePlaceType: noticeFormPlaceType.value,
-      basePricePerNight: noticeFormPricePerNight.value,
-      baseTimeIn: noticeFormTimeIn.value,
-      baseTimeOut: noticeFormTimeOut.value,
-      baseRoomNumbers: noticeFormRoomNumbers.value,
-      baseCapacities: noticeFormCapacities.value,
-      baseFeaturesStatuses: featuresStatuses,
-      baseDescription: noticeFormDescription.value
-    };
-  };
-
-  var setNoticeFormBaseValues = function () {
-    var noticeFormBaseValues = window.params.formBaseValues;
-    avatarPreview.src = noticeFormBaseValues.baseAvatar;
-    noticeFormTitle.value = noticeFormBaseValues.baseTitle;
-    noticeFormPlaceType.value = noticeFormBaseValues.basePlaceType;
-    noticeFormPricePerNight.value = noticeFormBaseValues.basePricePerNight;
-    noticeFormTimeIn.value = noticeFormBaseValues.baseTimeIn;
-    noticeFormTimeOut.value = noticeFormBaseValues.baseTimeOut;
-    noticeFormRoomNumbers.value = noticeFormBaseValues.baseRoomNumbers;
-    noticeFormCapacities.value = noticeFormBaseValues.baseCapacities;
-    noticeFormDescription.value = noticeFormBaseValues.baseDescription;
-
-    noticeFormFeatures.forEach(function (item, index) {
-      item.checked = noticeFormBaseValues.baseFeaturesStatuses[index];
-    });
-
-    adPhotoPreview.innerHTML = '';
   };
 
   var setMinPriceForPlaceType = function () {
@@ -89,7 +44,9 @@
   };
 
   var validateTitleLength = function () {
-    if (noticeFormTitle.value.length < window.params.form.TITLE_MIN_LENGTH || noticeFormTitle.value.length > window.params.form.TITLE_MAX_LENGTH) {
+    var isWrongTitleLength = noticeFormTitle.value.length < window.params.form.TITLE_MIN_LENGTH || noticeFormTitle.value.length > window.params.form.TITLE_MAX_LENGTH;
+
+    if (isWrongTitleLength) {
       noticeFormTitle.setCustomValidity('Заголовок должен быть от 30 до 100 символов. Сейчас: ' + noticeFormTitle.value.length);
     } else {
       noticeFormTitle.setCustomValidity('');
@@ -97,10 +54,12 @@
   };
 
   var validateCapacityNoGuests = function () {
+    var isGuestsLimitWithoutRoomsLimit = Number(noticeFormCapacities.value) === 0 && Number(noticeFormRoomNumbers.value) !== window.params.form.NO_GUESTS_LIMIT;
+    var isRoomsLimitWithoutGuestsLimit = Number(noticeFormCapacities.value) !== 0 && Number(noticeFormRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT;
 
-    if (Number(noticeFormCapacities.value) === 0 && Number(noticeFormRoomNumbers.value) !== window.params.form.NO_GUESTS_LIMIT) {
+    if (isGuestsLimitWithoutRoomsLimit) {
       noticeFormCapacities.setCustomValidity('Данный параметр доступен только для 100 комнат');
-    } else if (Number(noticeFormCapacities.value) !== 0 && Number(noticeFormRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT) {
+    } else if (isRoomsLimitWithoutGuestsLimit) {
       noticeFormCapacities.setCustomValidity('Данное кол-во комнат доступно не для гостей');
     } else {
       noticeFormCapacities.setCustomValidity('');
@@ -117,9 +76,11 @@
   };
 
   var validateNoticeForm = function () {
+    var isRoomsLimitOrGuestsLimit = Number(noticeFormCapacities.value) === 0 || Number(noticeFormRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT;
+
     validateTitleLength();
     validateCapacityLimit();
-    if (Number(noticeFormCapacities.value) === 0 || Number(noticeFormRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT) {
+    if (isRoomsLimitOrGuestsLimit) {
       validateCapacityNoGuests();
     }
   };
@@ -127,8 +88,6 @@
   window.form = {
     activate: activateNoticeForm,
     deactivate: deactivateNoticeForm,
-    saveBaseValues: saveNoticeFormBaseValues,
-    setBaseValues: setNoticeFormBaseValues,
     setMinPriceForPlaceType: setMinPriceForPlaceType,
     validate: validateNoticeForm
   };

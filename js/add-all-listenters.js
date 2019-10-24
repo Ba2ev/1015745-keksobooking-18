@@ -2,13 +2,7 @@
 (function () {
   var map = document.querySelector('.map');
   var mapMainPin = document.querySelector('.map__pin--main');
-
-  var mapFilter = document.querySelector('.map__filters');
-  var mapFilterPlaceType = mapFilter.querySelector('#housing-type');
-  var mapFilterPricePerNight = mapFilter.querySelector('#housing-price');
-  var mapFilterRoomNumbers = mapFilter.querySelector('#housing-rooms');
-  var mapFilterCapacities = mapFilter.querySelector('#housing-guests');
-  var mapFilterFeatures = mapFilter.querySelector('#housing-features');
+  var filter = document.querySelector('.map__filters');
 
   var noticeForm = document.querySelector('.ad-form');
   var noticeFormTitle = noticeForm.querySelector('#title');
@@ -25,36 +19,41 @@
   var photoChooser = document.querySelector('.ad-form__upload input[type=file]');
   var photoBlock = document.querySelector('.ad-form__photo');
 
-  var windowLoadHandler = function () {
-    window.mainPin.saveStartCoordinates();
-    window.form.saveBaseValues();
-    deactivatePage();
-    window.removeEventListener('load', windowLoadHandler);
+  var toggleMapStatus = function (isEnabled) {
+    map.classList.toggle('map--faded', isEnabled);
   };
 
   var deactivatePage = function () {
-    window.map.deactivate();
+    toggleMapStatus(true);
     window.form.deactivate();
     window.mainPin.setCoordinates();
   };
 
   var activatePage = function () {
-    window.map.activate();
+    toggleMapStatus(false);
     window.pin.render();
-    activateMapFilterListeners();
+    filter.addEventListener('change', filterElementChangeHandler);
     window.form.activate();
     window.form.setMinPriceForPlaceType();
     activateFormListeners();
   };
 
+  var updatePins = function () {
+    window.card.close();
+    window.pin.clear();
+    window.pin.render();
+  };
+
   var resetPage = function () {
-    window.mapFilter.setDefaultParameters();
-    deactivateMapFilterListeners();
+    filter.removeEventListener('change', filterElementChangeHandler);
+    filter.reset();
     window.mainPin.setStartCoordinates();
     window.mainPin.setCoordinates();
     window.card.close();
     window.pin.clear();
-    window.form.setBaseValues();
+    noticeForm.reset();
+    window.form.setMinPriceForPlaceType();
+    window.deletePhotos(photoBlock);
     deactivateFormListeners();
   };
 
@@ -88,6 +87,12 @@
     buttonReset.removeEventListener('click', buttonResetClickHandler);
   };
 
+  var windowLoadHandler = function () {
+    window.mainPin.saveStartCoordinates();
+    deactivatePage();
+    window.removeEventListener('load', windowLoadHandler);
+  };
+
   var noticeFormAddressFocusHandler = function () {
     noticeFormAddress.readOnly = true;
   };
@@ -109,24 +114,17 @@
   };
 
   var avatarChooserChangeHandler = function () {
-    window.photoChooserChangeHandler(avatarChooser, avatarPreviewImage);
+    window.avatarChooserChangeHandler(avatarChooser, avatarPreviewImage);
   };
 
   var photoChooserChangeHandler = function () {
     window.photoChooserChangeHandler(photoChooser, photoBlock);
   };
 
-  var updatePins = function () {
-    window.card.close();
-    window.pin.clear();
-    window.pin.render();
-  };
-
   var mainPinMouseDownHandler = function (evt) {
     if (map.classList.contains('map--faded')) {
       activatePage();
     }
-    window.mapFilter.saveDefaultParameters();
     window.mainPin.setCoordinates();
     window.mainPin.dragDrop(evt);
   };
@@ -137,47 +135,7 @@
     }
   };
 
-  var activateMapFilterListeners = function () {
-    mapFilterPlaceType.addEventListener('change', mapFilterElementChangeHandler);
-    mapFilterPricePerNight.addEventListener('change', mapFilterElementChangeHandler);
-    mapFilterRoomNumbers.addEventListener('change', mapFilterElementChangeHandler);
-    mapFilterCapacities.addEventListener('change', mapFilterElementChangeHandler);
-    mapFilterFeatures.addEventListener('click', mapFilterFeaturesClickHandler);
-    mapFilterFeatures.addEventListener('keydown', mapFilterFeaturesPressSpaceHandler);
-    mapFilterFeatures.addEventListener('keydown', mapFilterFeaturesPressEnterHandler);
-  };
-
-  var deactivateMapFilterListeners = function () {
-    mapFilterPlaceType.removeEventListener('change', mapFilterElementChangeHandler);
-    mapFilterPricePerNight.removeEventListener('change', mapFilterElementChangeHandler);
-    mapFilterRoomNumbers.removeEventListener('change', mapFilterElementChangeHandler);
-    mapFilterCapacities.removeEventListener('change', mapFilterElementChangeHandler);
-    mapFilterFeatures.removeEventListener('click', mapFilterFeaturesClickHandler);
-    mapFilterFeatures.removeEventListener('keydown', mapFilterFeaturesPressSpaceHandler);
-    mapFilterFeatures.removeEventListener('keydown', mapFilterFeaturesPressEnterHandler);
-  };
-
-  var mapFilterFeaturesClickHandler = function (evt) {
-    if (evt.target.classList.contains('map__feature')) {
-      evt.stopPropagation();
-      window.debounce(updatePins);
-    }
-  };
-
-  var mapFilterFeaturesPressEnterHandler = function (evt) {
-    if (evt.keyCode === window.params.keyCode.ENTER) {
-      evt.target.checked = !evt.target.checked;
-      window.debounce(updatePins);
-    }
-  };
-
-  var mapFilterFeaturesPressSpaceHandler = function (evt) {
-    if (evt.keyCode === window.params.keyCode.SPACE) {
-      window.debounce(updatePins);
-    }
-  };
-
-  var mapFilterElementChangeHandler = function () {
+  var filterElementChangeHandler = function () {
     window.debounce(updatePins);
   };
 

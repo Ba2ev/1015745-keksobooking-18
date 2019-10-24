@@ -12,7 +12,14 @@
     return adPhoto;
   };
 
-  window.photoChooserChangeHandler = function (chooser, renderPlace) {
+  var photoClickHandler = function (evt) {
+    evt.preventDefault();
+    if (evt.target.tagName === 'IMG') {
+      evt.target.remove();
+    }
+  };
+
+  window.avatarChooserChangeHandler = function (chooser, renderPlace) {
     var file = chooser.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -24,16 +31,42 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        if (renderPlace.tagName.toLowerCase() === 'img') {
-          renderPlace.src = reader.result;
-        } else {
-          renderPlace.innerHTML = '';
-          renderPlace.append(createPhoto(reader.result));
-        }
+        renderPlace.src = reader.result;
       });
 
       reader.readAsDataURL(file);
     }
+  };
+
+  window.photoChooserChangeHandler = function (chooser, renderPlace) {
+    var files = chooser.files;
+
+    var matches = Array.prototype.slice.call(files).every(function (item) {
+      var fileName = item.name.toLowerCase();
+      var checkFormat = FILE_TYPES.some(function (it) {
+        return fileName.endsWith(it);
+      });
+      return checkFormat;
+    });
+
+    if (matches) {
+
+      Array.prototype.slice.call(files).forEach(function (file) {
+        var reader = new FileReader();
+
+        reader.addEventListener('load', function () {
+          renderPlace.appendChild(createPhoto(reader.result));
+        });
+
+        reader.readAsDataURL(file);
+      });
+
+      renderPlace.addEventListener('click', photoClickHandler);
+    }
+  };
+
+  window.deletePhotos = function (renderPlace) {
+    renderPlace.innerHTML = '';
   };
 
 })();
