@@ -1,6 +1,8 @@
 'use strict';
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+  var avatarDefaulLogo = document.querySelector('.ad-form-header__preview img');
+  var AVATAR_DEFAULT_SRC = avatarDefaulLogo.src;
 
   var createPhoto = function (photoSrc) {
     var adPhoto = document.createElement('IMG');
@@ -65,7 +67,11 @@
     }
   };
 
-  window.deletePhotos = function (renderPlace) {
+  window.clearAvatar = function () {
+    avatarDefaulLogo.src = AVATAR_DEFAULT_SRC;
+  };
+
+  window.clearPhotos = function (renderPlace) {
     renderPlace.innerHTML = '';
   };
 

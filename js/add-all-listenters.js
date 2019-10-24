@@ -12,6 +12,7 @@
   var noticeFormCapacities = noticeForm.querySelector('#capacity');
   var noticeFormTimeIn = noticeForm.querySelector('#timein');
   var noticeFormTimeOut = noticeForm.querySelector('#timeout');
+  var buttonSubmit = noticeForm.querySelector('.ad-form__submit');
   var buttonReset = noticeForm.querySelector('.ad-form__reset');
 
   var avatarChooser = document.querySelector('.ad-form__field input[type=file]');
@@ -19,19 +20,15 @@
   var photoChooser = document.querySelector('.ad-form__upload input[type=file]');
   var photoBlock = document.querySelector('.ad-form__photo');
 
-  var toggleMapStatus = function (isEnabled) {
-    map.classList.toggle('map--faded', isEnabled);
-  };
-
   var deactivatePage = function () {
-    toggleMapStatus(true);
+    map.classList.add('map--faded');
     window.form.deactivate();
     window.mainPin.setCoordinates();
   };
 
   var activatePage = function () {
-    toggleMapStatus(false);
-    window.pin.render();
+    map.classList.remove('map--faded');
+    window.pin.load();
     filter.addEventListener('change', filterElementChangeHandler);
     window.form.activate();
     window.form.setMinPriceForPlaceType();
@@ -41,7 +38,7 @@
   var updatePins = function () {
     window.card.close();
     window.pin.clear();
-    window.pin.render();
+    window.pin.filter();
   };
 
   var resetPage = function () {
@@ -52,8 +49,10 @@
     window.card.close();
     window.pin.clear();
     noticeForm.reset();
+    buttonSubmit.disabled = false;
     window.form.setMinPriceForPlaceType();
-    window.deletePhotos(photoBlock);
+    window.clearAvatar();
+    window.clearPhotos(photoBlock);
     deactivateFormListeners();
   };
 
@@ -140,6 +139,7 @@
   };
 
   var noticeFormSubmitHandler = function (evt) {
+    buttonSubmit.disabled = true;
     window.backend.save(new FormData(noticeForm), function () {
       window.showSuccess();
       resetPage();
