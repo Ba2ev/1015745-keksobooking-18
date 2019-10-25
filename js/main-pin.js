@@ -17,7 +17,7 @@
     mainPin.style.top = window.params.mainPin['startY'];
   };
 
-  var setCoordinates = function () {
+  var setFormCoordinates = function () {
     var mainPinX = mainPin.style.left;
     var mainPinY = mainPin.style.top;
 
@@ -78,7 +78,7 @@
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
 
-        setCoordinates();
+        setFormCoordinates();
       }
     };
 
@@ -105,7 +105,7 @@
   window.mainPin = {
     saveStartCoordinates: saveStartCoordinates,
     setStartCoordinates: setStartCoordinates,
-    setCoordinates: setCoordinates,
+    setFormCoordinates: setFormCoordinates,
     dragDrop: dragDrop
   };
 })();

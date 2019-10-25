@@ -2,17 +2,29 @@
 (function () {
   var form = document.querySelector('.ad-form');
   var formGroups = form.querySelectorAll('fieldset');
+  var formAddress = form.querySelector('#address');
   var formTitle = form.querySelector('#title');
   var formPlaceType = form.querySelector('#type');
   var formPricePerNight = form.querySelector('#price');
   var formRoomNumbers = form.querySelector('#room_number');
   var formCapacities = form.querySelector('#capacity');
+  var formTimeIn = form.querySelector('#timein');
+  var formTimeOut = form.querySelector('#timeout');
+  var buttonSubmit = form.querySelector('.ad-form__submit');
+
+  var avatarChooser = form.querySelector('.ad-form__field input[type=file]');
+  var avatarPreviewImage = form.querySelector('.ad-form-header__preview img');
+  var photoChooser = form.querySelector('.ad-form__upload input[type=file]');
+  var photoBlock = form.querySelector('.ad-form__photo');
 
   var activateForm = function () {
     form.classList.remove('ad-form--disabled');
     formGroups.forEach(function (item) {
       item.removeAttribute('disabled');
     });
+    buttonSubmit.disabled = false;
+    setMinPriceForPlaceType();
+    addFormListeners();
   };
 
   var deactivateForm = function () {
@@ -20,6 +32,11 @@
     formGroups.forEach(function (item) {
       item.setAttribute('disabled', 'disabled');
     });
+    buttonSubmit.disabled = true;
+    window.clearAvatar();
+    window.clearPhotos(photoBlock);
+    setMinPriceForPlaceType();
+    removeFormListeners();
   };
 
   var setMinPriceForPlaceType = function () {
@@ -85,10 +102,61 @@
     }
   };
 
+  var formAddressFocusHandler = function () {
+    formAddress.readOnly = true;
+  };
+
+  var formAddressBlurHandler = function () {
+    formAddress.readOnly = false;
+  };
+
+  var formTimesChangeHandler = function () {
+    window.util.synchronizeElementsValues(formTimeIn, formTimeOut);
+  };
+
+  var formElementChangeHandler = function () {
+    validateForm();
+  };
+
+  var formPlaceTypeChangeHandler = function () {
+    window.form.setMinPriceForPlaceType();
+  };
+
+  var avatarChooserChangeHandler = function () {
+    window.avatarChooserChangeHandler(avatarChooser, avatarPreviewImage);
+  };
+
+  var photoChooserChangeHandler = function () {
+    window.photoChooserChangeHandler(photoChooser, photoBlock);
+  };
+  var addFormListeners = function () {
+    avatarChooser.addEventListener('change', avatarChooserChangeHandler);
+    formTitle.addEventListener('change', formElementChangeHandler);
+    formAddress.addEventListener('focus', formAddressFocusHandler);
+    formAddress.addEventListener('blur', formAddressBlurHandler);
+    formPlaceType.addEventListener('change', formPlaceTypeChangeHandler);
+    formRoomNumbers.addEventListener('change', formElementChangeHandler);
+    formCapacities.addEventListener('change', formElementChangeHandler);
+    formTimeIn.addEventListener('change', formTimesChangeHandler);
+    formTimeOut.addEventListener('change', formTimesChangeHandler);
+    photoChooser.addEventListener('change', photoChooserChangeHandler);
+  };
+
+  var removeFormListeners = function () {
+    avatarChooser.removeEventListener('change', avatarChooserChangeHandler);
+    formTitle.removeEventListener('change', formElementChangeHandler);
+    formAddress.removeEventListener('focus', formAddressFocusHandler);
+    formAddress.removeEventListener('blur', formAddressBlurHandler);
+    formPlaceType.removeEventListener('change', formPlaceTypeChangeHandler);
+    formRoomNumbers.removeEventListener('change', formElementChangeHandler);
+    formCapacities.removeEventListener('change', formElementChangeHandler);
+    formTimeIn.removeEventListener('change', formTimesChangeHandler);
+    formTimeOut.removeEventListener('change', formTimesChangeHandler);
+    photoChooser.removeEventListener('change', photoChooserChangeHandler);
+  };
+
   window.form = {
     activate: activateForm,
-    deactivate: deactivateForm,
-    setMinPriceForPlaceType: setMinPriceForPlaceType,
-    validate: validateForm
+    deactivate: deactivateForm
   };
 })();
