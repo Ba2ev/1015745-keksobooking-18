@@ -45,7 +45,7 @@
     mapPins.addEventListener('click', onPinClick);
   };
 
-  var createfilteredPins = function () {
+  var createFilteredPins = function () {
     var filteredPins = window.data.filter(window.filter.isSimilar);
     window.sortedData = filteredPins;
     createPins(filteredPins);
@@ -64,7 +64,7 @@
 
   window.pin = {
     load: loadPins,
-    filter: createfilteredPins,
+    filter: createFilteredPins,
     clear: clearPins
   };
 })();

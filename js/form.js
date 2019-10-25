@@ -1,82 +1,82 @@
 'use strict';
 (function () {
-  var noticeForm = document.querySelector('.ad-form');
-  var noticeFormGroups = noticeForm.querySelectorAll('fieldset');
-  var noticeFormTitle = noticeForm.querySelector('#title');
-  var noticeFormPlaceType = noticeForm.querySelector('#type');
-  var noticeFormPricePerNight = noticeForm.querySelector('#price');
-  var noticeFormRoomNumbers = noticeForm.querySelector('#room_number');
-  var noticeFormCapacities = noticeForm.querySelector('#capacity');
+  var form = document.querySelector('.ad-form');
+  var formGroups = form.querySelectorAll('fieldset');
+  var formTitle = form.querySelector('#title');
+  var formPlaceType = form.querySelector('#type');
+  var formPricePerNight = form.querySelector('#price');
+  var formRoomNumbers = form.querySelector('#room_number');
+  var formCapacities = form.querySelector('#capacity');
 
-  var activateNoticeForm = function () {
-    noticeForm.classList.remove('ad-form--disabled');
-    noticeFormGroups.forEach(function (item) {
+  var activateForm = function () {
+    form.classList.remove('ad-form--disabled');
+    formGroups.forEach(function (item) {
       item.removeAttribute('disabled');
     });
   };
 
-  var deactivateNoticeForm = function () {
-    noticeForm.classList.add('ad-form--disabled');
-    noticeFormGroups.forEach(function (item) {
+  var deactivateForm = function () {
+    form.classList.add('ad-form--disabled');
+    formGroups.forEach(function (item) {
       item.setAttribute('disabled', 'disabled');
     });
   };
 
   var setMinPriceForPlaceType = function () {
-    switch (noticeFormPlaceType.value) {
+    switch (formPlaceType.value) {
       case 'flat':
-        noticeFormPricePerNight.min = window.params.form.FLAT_MIN_PRICE;
+        formPricePerNight.min = window.params.form.FLAT_MIN_PRICE;
         break;
       case 'house':
-        noticeFormPricePerNight.min = window.params.form.HOUSE_MIN_PRICE;
+        formPricePerNight.min = window.params.form.HOUSE_MIN_PRICE;
         break;
       case 'palace':
-        noticeFormPricePerNight.min = window.params.form.PALACE_MIN_PRICE;
+        formPricePerNight.min = window.params.form.PALACE_MIN_PRICE;
         break;
       case 'bungalo':
-        noticeFormPricePerNight.min = window.params.form.BUNGALO_MIN_PRICE;
+        formPricePerNight.min = window.params.form.BUNGALO_MIN_PRICE;
         break;
       default:
-        noticeFormPricePerNight.min = 0;
+        formPricePerNight.min = 0;
         break;
     }
-    noticeFormPricePerNight.placeholder = noticeFormPricePerNight.min;
+    formPricePerNight.placeholder = formPricePerNight.min;
   };
 
   var validateTitleLength = function () {
-    var isWrongTitleLength = noticeFormTitle.value.length < window.params.form.TITLE_MIN_LENGTH || noticeFormTitle.value.length > window.params.form.TITLE_MAX_LENGTH;
+    var isWrongTitleLength = formTitle.value.length < window.params.form.TITLE_MIN_LENGTH || formTitle.value.length > window.params.form.TITLE_MAX_LENGTH;
 
     if (isWrongTitleLength) {
-      noticeFormTitle.setCustomValidity('Заголовок должен быть от 30 до 100 символов. Сейчас: ' + noticeFormTitle.value.length);
+      formTitle.setCustomValidity('Заголовок должен быть от 30 до 100 символов. Сейчас: ' + formTitle.value.length);
     } else {
-      noticeFormTitle.setCustomValidity('');
+      formTitle.setCustomValidity('');
     }
   };
 
   var validateCapacityNoGuests = function () {
-    var isGuestsLimitWithoutRoomsLimit = Number(noticeFormCapacities.value) === 0 && Number(noticeFormRoomNumbers.value) !== window.params.form.NO_GUESTS_LIMIT;
-    var isRoomsLimitWithoutGuestsLimit = Number(noticeFormCapacities.value) !== 0 && Number(noticeFormRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT;
+    var isGuestsLimitWithoutRoomsLimit = Number(formCapacities.value) === 0 && Number(formRoomNumbers.value) !== window.params.form.NO_GUESTS_LIMIT;
+    var isRoomsLimitWithoutGuestsLimit = Number(formCapacities.value) !== 0 && Number(formRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT;
 
     if (isGuestsLimitWithoutRoomsLimit) {
-      noticeFormCapacities.setCustomValidity('Данный параметр доступен только для 100 комнат');
+      formCapacities.setCustomValidity('Данный параметр доступен только для 100 комнат');
     } else if (isRoomsLimitWithoutGuestsLimit) {
-      noticeFormCapacities.setCustomValidity('Данное кол-во комнат доступно не для гостей');
+      formCapacities.setCustomValidity('Данное кол-во комнат доступно не для гостей');
     } else {
-      noticeFormCapacities.setCustomValidity('');
+      formCapacities.setCustomValidity('');
     }
   };
 
   var validateCapacityLimit = function () {
 
-    if (Number(noticeFormCapacities.value) > Number(noticeFormRoomNumbers.value)) {
-      noticeFormCapacities.setCustomValidity('Кол-во мест должно быть не больше кол-ва комнат!');
+    if (Number(formCapacities.value) > Number(formRoomNumbers.value)) {
+      formCapacities.setCustomValidity('Кол-во мест должно быть не больше кол-ва комнат!');
     } else {
-      noticeFormCapacities.setCustomValidity('');
+      formCapacities.setCustomValidity('');
     }
   };
 
-  var validateNoticeForm = function () {
-    var isRoomsLimitOrGuestsLimit = Number(noticeFormCapacities.value) === 0 || Number(noticeFormRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT;
+  var validateForm = function () {
+    var isRoomsLimitOrGuestsLimit = Number(formCapacities.value) === 0 || Number(formRoomNumbers.value) === window.params.form.NO_GUESTS_LIMIT;
 
     validateTitleLength();
     validateCapacityLimit();
@@ -86,9 +86,9 @@
   };
 
   window.form = {
-    activate: activateNoticeForm,
-    deactivate: deactivateNoticeForm,
+    activate: activateForm,
+    deactivate: deactivateForm,
     setMinPriceForPlaceType: setMinPriceForPlaceType,
-    validate: validateNoticeForm
+    validate: validateForm
   };
 })();

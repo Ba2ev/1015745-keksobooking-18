@@ -1,24 +1,24 @@
 'use strict';
 (function () {
   var map = document.querySelector('.map');
-  var mapMainPin = document.querySelector('.map__pin--main');
-  var filter = document.querySelector('.map__filters');
+  var mainPin = map.querySelector('.map__pin--main');
+  var filter = map.querySelector('.map__filters');
 
-  var noticeForm = document.querySelector('.ad-form');
-  var noticeFormTitle = noticeForm.querySelector('#title');
-  var noticeFormAddress = noticeForm.querySelector('#address');
-  var noticeFormPlaceType = noticeForm.querySelector('#type');
-  var noticeFormRoomNumbers = noticeForm.querySelector('#room_number');
-  var noticeFormCapacities = noticeForm.querySelector('#capacity');
-  var noticeFormTimeIn = noticeForm.querySelector('#timein');
-  var noticeFormTimeOut = noticeForm.querySelector('#timeout');
-  var buttonSubmit = noticeForm.querySelector('.ad-form__submit');
-  var buttonReset = noticeForm.querySelector('.ad-form__reset');
+  var form = document.querySelector('.ad-form');
+  var formTitle = form.querySelector('#title');
+  var formAddress = form.querySelector('#address');
+  var formPlaceType = form.querySelector('#type');
+  var formRoomNumbers = form.querySelector('#room_number');
+  var formCapacities = form.querySelector('#capacity');
+  var formTimeIn = form.querySelector('#timein');
+  var formTimeOut = form.querySelector('#timeout');
+  var buttonSubmit = form.querySelector('.ad-form__submit');
+  var buttonReset = form.querySelector('.ad-form__reset');
 
-  var avatarChooser = document.querySelector('.ad-form__field input[type=file]');
-  var avatarPreviewImage = document.querySelector('.ad-form-header__preview img');
-  var photoChooser = document.querySelector('.ad-form__upload input[type=file]');
-  var photoBlock = document.querySelector('.ad-form__photo');
+  var avatarChooser = form.querySelector('.ad-form__field input[type=file]');
+  var avatarPreviewImage = form.querySelector('.ad-form-header__preview img');
+  var photoChooser = form.querySelector('.ad-form__upload input[type=file]');
+  var photoBlock = form.querySelector('.ad-form__photo');
 
   var deactivatePage = function () {
     map.classList.add('map--faded');
@@ -48,7 +48,7 @@
     window.mainPin.setCoordinates();
     window.card.close();
     window.pin.clear();
-    noticeForm.reset();
+    form.reset();
     buttonSubmit.disabled = false;
     window.form.setMinPriceForPlaceType();
     window.clearAvatar();
@@ -58,31 +58,31 @@
 
   var activateFormListeners = function () {
     avatarChooser.addEventListener('change', avatarChooserChangeHandler);
-    noticeFormTitle.addEventListener('change', noticeFormElementChangeHandler);
-    noticeFormAddress.addEventListener('focus', noticeFormAddressFocusHandler);
-    noticeFormAddress.addEventListener('blur', noticeFormAddressBlurHandler);
-    noticeFormPlaceType.addEventListener('change', noticeFormPlaceTypeChangeHandler);
-    noticeFormRoomNumbers.addEventListener('change', noticeFormElementChangeHandler);
-    noticeFormCapacities.addEventListener('change', noticeFormElementChangeHandler);
-    noticeFormTimeIn.addEventListener('change', noticeFormTimesChangeHandler);
-    noticeFormTimeOut.addEventListener('change', noticeFormTimesChangeHandler);
+    formTitle.addEventListener('change', formElementChangeHandler);
+    formAddress.addEventListener('focus', formAddressFocusHandler);
+    formAddress.addEventListener('blur', formAddressBlurHandler);
+    formPlaceType.addEventListener('change', formPlaceTypeChangeHandler);
+    formRoomNumbers.addEventListener('change', formElementChangeHandler);
+    formCapacities.addEventListener('change', formElementChangeHandler);
+    formTimeIn.addEventListener('change', formTimesChangeHandler);
+    formTimeOut.addEventListener('change', formTimesChangeHandler);
     photoChooser.addEventListener('change', photoChooserChangeHandler);
-    noticeForm.addEventListener('submit', noticeFormSubmitHandler);
+    form.addEventListener('submit', formSubmitHandler);
     buttonReset.addEventListener('click', buttonResetClickHandler);
   };
 
   var deactivateFormListeners = function () {
     avatarChooser.removeEventListener('change', avatarChooserChangeHandler);
-    noticeFormTitle.removeEventListener('change', noticeFormElementChangeHandler);
-    noticeFormAddress.removeEventListener('focus', noticeFormAddressFocusHandler);
-    noticeFormAddress.removeEventListener('blur', noticeFormAddressBlurHandler);
-    noticeFormPlaceType.removeEventListener('change', noticeFormPlaceTypeChangeHandler);
-    noticeFormRoomNumbers.removeEventListener('change', noticeFormElementChangeHandler);
-    noticeFormCapacities.removeEventListener('change', noticeFormElementChangeHandler);
-    noticeFormTimeIn.removeEventListener('change', noticeFormTimesChangeHandler);
-    noticeFormTimeOut.removeEventListener('change', noticeFormTimesChangeHandler);
+    formTitle.removeEventListener('change', formElementChangeHandler);
+    formAddress.removeEventListener('focus', formAddressFocusHandler);
+    formAddress.removeEventListener('blur', formAddressBlurHandler);
+    formPlaceType.removeEventListener('change', formPlaceTypeChangeHandler);
+    formRoomNumbers.removeEventListener('change', formElementChangeHandler);
+    formCapacities.removeEventListener('change', formElementChangeHandler);
+    formTimeIn.removeEventListener('change', formTimesChangeHandler);
+    formTimeOut.removeEventListener('change', formTimesChangeHandler);
     photoChooser.removeEventListener('change', photoChooserChangeHandler);
-    noticeForm.removeEventListener('submit', noticeFormSubmitHandler);
+    form.removeEventListener('submit', formSubmitHandler);
     buttonReset.removeEventListener('click', buttonResetClickHandler);
   };
 
@@ -92,23 +92,23 @@
     window.removeEventListener('load', windowLoadHandler);
   };
 
-  var noticeFormAddressFocusHandler = function () {
-    noticeFormAddress.readOnly = true;
+  var formAddressFocusHandler = function () {
+    formAddress.readOnly = true;
   };
 
-  var noticeFormAddressBlurHandler = function () {
-    noticeFormAddress.readOnly = false;
+  var formAddressBlurHandler = function () {
+    formAddress.readOnly = false;
   };
 
-  var noticeFormTimesChangeHandler = function () {
-    window.util.synchronizeElementsValues(noticeFormTimeIn, noticeFormTimeOut);
+  var formTimesChangeHandler = function () {
+    window.util.synchronizeElementsValues(formTimeIn, formTimeOut);
   };
 
-  var noticeFormElementChangeHandler = function () {
+  var formElementChangeHandler = function () {
     window.form.validate();
   };
 
-  var noticeFormPlaceTypeChangeHandler = function () {
+  var formPlaceTypeChangeHandler = function () {
     window.form.setMinPriceForPlaceType();
   };
 
@@ -138,9 +138,9 @@
     window.debounce(updatePins);
   };
 
-  var noticeFormSubmitHandler = function (evt) {
+  var formSubmitHandler = function (evt) {
     buttonSubmit.disabled = true;
-    window.backend.save(new FormData(noticeForm), function () {
+    window.backend.save(new FormData(form), function () {
       window.showSuccess();
       resetPage();
       deactivatePage();
@@ -155,8 +155,8 @@
 
   window.addEventListener('load', windowLoadHandler);
 
-  mapMainPin.addEventListener('mousedown', mainPinMouseDownHandler);
+  mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
 
-  mapMainPin.addEventListener('keydown', mainPinPressEnterHandler);
+  mainPin.addEventListener('keydown', mainPinPressEnterHandler);
 
 })();

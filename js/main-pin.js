@@ -1,25 +1,25 @@
 'use strict';
 (function () {
   var map = document.querySelector('.map');
-  var mapMainPin = document.querySelector('.map__pin--main');
-  var noticeForm = document.querySelector('.ad-form');
-  var noticeFormAddress = noticeForm.querySelector('#address');
+  var mainPin = document.querySelector('.map__pin--main');
+  var form = document.querySelector('.ad-form');
+  var formAddress = form.querySelector('#address');
 
   var saveStartCoordinates = function () {
-    var mainPinX = mapMainPin.style.left;
-    var mainPinY = mapMainPin.style.top;
+    var mainPinX = mainPin.style.left;
+    var mainPinY = mainPin.style.top;
     window.params.mainPin['startX'] = mainPinX;
     window.params.mainPin['startY'] = mainPinY;
   };
 
   var setStartCoordinates = function () {
-    mapMainPin.style.left = window.params.mainPin['startX'];
-    mapMainPin.style.top = window.params.mainPin['startY'];
+    mainPin.style.left = window.params.mainPin['startX'];
+    mainPin.style.top = window.params.mainPin['startY'];
   };
 
   var setCoordinates = function () {
-    var mainPinX = mapMainPin.style.left;
-    var mainPinY = mapMainPin.style.top;
+    var mainPinX = mainPin.style.left;
+    var mainPinY = mainPin.style.top;
 
     var mainPinXValue = mainPinX.substr(0, mainPinX.length - 2);
     var mainPinYValue = mainPinY.substr(0, mainPinY.length - 2);
@@ -27,21 +27,21 @@
     var mainPinSpikeX = Math.floor(Number(mainPinXValue) + window.params.mainPin.WIDTH / 2);
     var mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.HEIGHT + window.params.mainPin.SPIKE_HEIGHT);
 
-    if (noticeForm.classList.contains('ad-form--disabled')) {
+    if (form.classList.contains('ad-form--disabled')) {
       mainPinSpikeY = Math.floor(Number(mainPinYValue) + window.params.mainPin.HEIGHT / 2);
     }
-    noticeFormAddress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
+    formAddress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
   };
 
   var validateMainPinCoordinates = function () {
-    var mainPinCoordinates = noticeFormAddress.value.split(', ');
+    var mainPinCoordinates = formAddress.value.split(', ');
     var mainPinX = mainPinCoordinates[0];
     var mainPinY = mainPinCoordinates[1];
     var isOutLimits = mainPinX < 0 || mainPinX > map.offsetWidth || mainPinY < window.params.pin.POSITION_TOP_LIMIT || mainPinY > window.params.pin.POSITION_BOTTOM_LIMIT;
     if (isOutLimits) {
-      noticeFormAddress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + window.params.pin.POSITION_TOP_LIMIT + ' <= Y <= ' + window.params.pin.POSITION_BOTTOM_LIMIT);
+      formAddress.setCustomValidity('Координаты метки находятся вне допустимой области: ' + 0 + ' <= X <= ' + map.offsetWidth + ', ' + window.params.pin.POSITION_TOP_LIMIT + ' <= Y <= ' + window.params.pin.POSITION_BOTTOM_LIMIT);
     } else {
-      noticeFormAddress.setCustomValidity('');
+      formAddress.setCustomValidity('');
     }
   };
 
@@ -72,11 +72,11 @@
       var mainPinHalfWidth = Math.floor(window.params.mainPin.WIDTH / 2);
       var mainPinHeight = window.params.mainPin.HEIGHT + window.params.mainPin.SPIKE_HEIGHT;
 
-      var isInHorizontalLimits = ((mapMainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mapMainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth);
-      var isInVerticalLimits = ((mapMainPin.offsetTop - shift.y) >= window.params.pin.POSITION_TOP_LIMIT - mainPinHeight) && ((mapMainPin.offsetTop - shift.y) <= window.params.pin.POSITION_BOTTOM_LIMIT - mainPinHeight);
+      var isInHorizontalLimits = ((mainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth);
+      var isInVerticalLimits = ((mainPin.offsetTop - shift.y) >= window.params.pin.POSITION_TOP_LIMIT - mainPinHeight) && ((mainPin.offsetTop - shift.y) <= window.params.pin.POSITION_BOTTOM_LIMIT - mainPinHeight);
       if (isInHorizontalLimits && isInVerticalLimits) {
-        mapMainPin.style.top = (mapMainPin.offsetTop - shift.y) + 'px';
-        mapMainPin.style.left = (mapMainPin.offsetLeft - shift.x) + 'px';
+        mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+        mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
 
         setCoordinates();
       }
@@ -91,9 +91,9 @@
       if (dragged) {
         var clickPreventDefaultHandler = function (defaultEvt) {
           defaultEvt.preventDefault();
-          mapMainPin.removeEventListener('click', clickPreventDefaultHandler);
+          mainPin.removeEventListener('click', clickPreventDefaultHandler);
         };
-        mapMainPin.addEventListener('click', clickPreventDefaultHandler);
+        mainPin.addEventListener('click', clickPreventDefaultHandler);
       }
       validateMainPinCoordinates();
     };
