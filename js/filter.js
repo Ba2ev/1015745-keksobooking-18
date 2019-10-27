@@ -8,7 +8,7 @@
   var filterCapacities = filter.querySelector('#housing-guests');
   var filterPricePerNight = filter.querySelector('#housing-price');
 
-  var UNSORTED_VALUE = 'any';
+  var FILTER_UNSORTED_VALUE = 'any';
   var PRICE_HIGHT_VALUE = 50000;
   var PRICE_MIDDLE_VALUE = 10000;
 
@@ -28,28 +28,28 @@
   };
 
   var isPlaceTypeSimilar = function (ad) {
-    if (filterPlaceType.value !== UNSORTED_VALUE) {
+    if (filterPlaceType.value !== FILTER_UNSORTED_VALUE) {
       return ad.offer.type === filterPlaceType.value;
     }
     return true;
   };
 
   var isRoomNumbersSimilar = function (ad) {
-    if (filterRoomNumbers.value !== UNSORTED_VALUE) {
+    if (filterRoomNumbers.value !== FILTER_UNSORTED_VALUE) {
       return ad.offer.rooms === Number(filterRoomNumbers.value);
     }
     return true;
   };
 
   var isCapacitiesSimilar = function (ad) {
-    if (filterCapacities.value !== UNSORTED_VALUE) {
+    if (filterCapacities.value !== FILTER_UNSORTED_VALUE) {
       return ad.offer.guests === Number(filterCapacities.value);
     }
     return true;
   };
 
   var isPricePerNightSimilar = function (ad) {
-    if (filterPricePerNight.value !== UNSORTED_VALUE) {
+    if (filterPricePerNight.value !== FILTER_UNSORTED_VALUE) {
 
       var currentValue = '';
 

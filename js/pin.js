@@ -13,6 +13,7 @@
       var adPins = mapPins.querySelectorAll('.map__pin:not(.map__pin--main)');
       var currentIndex = Array.prototype.slice.call(adPins).indexOf(target);
       window.card.render(window.sortedData[currentIndex]);
+      adPins[currentIndex].classList.add('map__pin--active');
 
       if (mapCard) {
         window.card.close();

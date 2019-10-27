@@ -9,10 +9,10 @@
 
   var deactivatePage = function () {
     map.classList.add('map--faded');
-    window.mainPin.setFormCoordinates();
     window.form.deactivate();
     form.removeEventListener('submit', formSubmitHandler);
     buttonReset.removeEventListener('click', buttonResetClickHandler);
+    window.mainPin.setFormCoordinates();
   };
 
   var activatePage = function () {
@@ -27,9 +27,8 @@
   var resetPage = function () {
     filter.removeEventListener('change', filterElementChangeHandler);
     filter.reset();
-    window.mainPin.setStartCoordinates();
-    window.mainPin.setFormCoordinates();
     window.card.close();
+    window.mainPin.setStartCoordinates();
     window.pin.clear();
     form.reset();
   };
@@ -68,13 +67,15 @@
     window.debounce(updatePins);
   };
 
+  var isformSubmitSuccess = function () {
+    window.showSuccess();
+    resetPage();
+    deactivatePage();
+  };
+
   var formSubmitHandler = function (evt) {
     buttonSubmit.disabled = true;
-    window.backend.save(new FormData(form), function () {
-      window.showSuccess();
-      resetPage();
-      deactivatePage();
-    }, window.showError);
+    window.backend.save(new FormData(form), isformSubmitSuccess, window.showError);
     evt.preventDefault();
   };
 

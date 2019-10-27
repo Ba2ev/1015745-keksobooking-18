@@ -20,7 +20,7 @@
   var activateForm = function () {
     form.classList.remove('ad-form--disabled');
     formGroups.forEach(function (item) {
-      item.removeAttribute('disabled');
+      item.disabled = false;
     });
     buttonSubmit.disabled = false;
     setMinPriceForPlaceType();
@@ -30,7 +30,7 @@
   var deactivateForm = function () {
     form.classList.add('ad-form--disabled');
     formGroups.forEach(function (item) {
-      item.setAttribute('disabled', 'disabled');
+      item.disabled = true;
     });
     buttonSubmit.disabled = true;
     window.clearAvatar();
@@ -110,8 +110,12 @@
     formAddress.readOnly = false;
   };
 
-  var formTimesChangeHandler = function () {
+  var formTimeInChangeHandler = function () {
     window.util.synchronizeElementsValues(formTimeIn, formTimeOut);
+  };
+
+  var formTimeOutChangeHandler = function () {
+    window.util.synchronizeElementsValues(formTimeOut, formTimeIn);
   };
 
   var formElementChangeHandler = function () {
@@ -119,7 +123,7 @@
   };
 
   var formPlaceTypeChangeHandler = function () {
-    window.form.setMinPriceForPlaceType();
+    setMinPriceForPlaceType();
   };
 
   var avatarChooserChangeHandler = function () {
@@ -129,6 +133,7 @@
   var photoChooserChangeHandler = function () {
     window.photoChooserChangeHandler(photoChooser, photoBlock);
   };
+
   var addFormListeners = function () {
     avatarChooser.addEventListener('change', avatarChooserChangeHandler);
     formTitle.addEventListener('change', formElementChangeHandler);
@@ -137,8 +142,8 @@
     formPlaceType.addEventListener('change', formPlaceTypeChangeHandler);
     formRoomNumbers.addEventListener('change', formElementChangeHandler);
     formCapacities.addEventListener('change', formElementChangeHandler);
-    formTimeIn.addEventListener('change', formTimesChangeHandler);
-    formTimeOut.addEventListener('change', formTimesChangeHandler);
+    formTimeIn.addEventListener('change', formTimeInChangeHandler);
+    formTimeOut.addEventListener('change', formTimeOutChangeHandler);
     photoChooser.addEventListener('change', photoChooserChangeHandler);
   };
 
@@ -150,8 +155,8 @@
     formPlaceType.removeEventListener('change', formPlaceTypeChangeHandler);
     formRoomNumbers.removeEventListener('change', formElementChangeHandler);
     formCapacities.removeEventListener('change', formElementChangeHandler);
-    formTimeIn.removeEventListener('change', formTimesChangeHandler);
-    formTimeOut.removeEventListener('change', formTimesChangeHandler);
+    formTimeIn.removeEventListener('change', formTimeInChangeHandler);
+    formTimeOut.removeEventListener('change', formTimeOutChangeHandler);
     photoChooser.removeEventListener('change', photoChooserChangeHandler);
   };
 

@@ -21,9 +21,11 @@
 
   var closeAdCard = function () {
     var mapCard = document.querySelector('.map__card.popup');
+    var activePin = document.querySelector('.map__pin--active');
     if (mapCard) {
       document.removeEventListener('keydown', adCardPressEscHandler);
       mapCard.remove();
+      activePin.classList.remove('map__pin--active');
     }
   };
 

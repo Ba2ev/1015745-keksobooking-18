@@ -30,7 +30,6 @@
   window.showError = function (text) {
     var errorElement = errorTemplate.cloneNode(true);
     var promo = document.querySelector('.promo');
-
     errorElement.querySelector('.error__message').textContent = text;
     promo.before(errorElement);
     openError();
