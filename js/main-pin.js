@@ -5,6 +5,10 @@
   var form = document.querySelector('.ad-form');
   var formAddress = form.querySelector('#address');
 
+  /**
+   * Сохраняет стартовые координаты главного пина
+   * @return {void}
+   */
   var saveStartCoordinates = function () {
     var mainPinX = mainPin.style.left;
     var mainPinY = mainPin.style.top;
@@ -12,11 +16,19 @@
     window.params.mainPin['startY'] = mainPinY;
   };
 
+  /**
+   * Устанавливает стартовые координаты главного пина
+   * @return {void}
+   */
   var setStartCoordinates = function () {
     mainPin.style.left = window.params.mainPin['startX'];
     mainPin.style.top = window.params.mainPin['startY'];
   };
 
+  /**
+   * Записывает текущие координаты главного пина в поле "адрес"
+   * @return {void}
+   */
   var setFormCoordinates = function () {
     var mainPinX = mainPin.style.left;
     var mainPinY = mainPin.style.top;
@@ -33,6 +45,10 @@
     formAddress.value = mainPinSpikeX + ', ' + mainPinSpikeY;
   };
 
+  /**
+   * Проверяет координаты главного пина на попадание в допустимый диапазон
+   * @return {void}
+   */
   var validateMainPinCoordinates = function () {
     var mainPinCoordinates = formAddress.value.split(', ');
     var mainPinX = mainPinCoordinates[0];
@@ -45,6 +61,16 @@
     }
   };
 
+  var clickPreventDefaultHandler = function (defaultEvt) {
+    defaultEvt.preventDefault();
+    mainPin.removeEventListener('click', clickPreventDefaultHandler);
+  };
+
+  /**
+   * Управляет перемещением главного пина в пределах карты
+   * @param {object} evt - объект события
+   * @return {void}
+   */
   var dragDrop = function (evt) {
     evt.preventDefault();
 
@@ -72,9 +98,15 @@
       var mainPinHalfWidth = Math.floor(window.params.mainPin.WIDTH / 2);
       var mainPinHeight = window.params.mainPin.HEIGHT + window.params.mainPin.SPIKE_HEIGHT;
 
-      var isInHorizontalLimits = ((mainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth);
-      var isInVerticalLimits = ((mainPin.offsetTop - shift.y) >= window.params.pin.POSITION_TOP_LIMIT - mainPinHeight) && ((mainPin.offsetTop - shift.y) <= window.params.pin.POSITION_BOTTOM_LIMIT - mainPinHeight);
-      if (isInHorizontalLimits && isInVerticalLimits) {
+      var isInHorizontalLimits = function () {
+        return ((mainPin.offsetLeft - shift.x) >= -mainPinHalfWidth) && ((mainPin.offsetLeft - shift.x) <= map.offsetWidth - mainPinHalfWidth);
+      };
+
+      var isInVerticalLimits = function () {
+        return ((mainPin.offsetTop - shift.y) >= window.params.pin.POSITION_TOP_LIMIT - mainPinHeight) && ((mainPin.offsetTop - shift.y) <= window.params.pin.POSITION_BOTTOM_LIMIT - mainPinHeight);
+      };
+
+      if (isInHorizontalLimits() && isInVerticalLimits()) {
         mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
         mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
 
@@ -89,10 +121,6 @@
       document.removeEventListener('mouseup', mouseUpHandler);
 
       if (dragged) {
-        var clickPreventDefaultHandler = function (defaultEvt) {
-          defaultEvt.preventDefault();
-          mainPin.removeEventListener('click', clickPreventDefaultHandler);
-        };
         mainPin.addEventListener('click', clickPreventDefaultHandler);
       }
       validateMainPinCoordinates();

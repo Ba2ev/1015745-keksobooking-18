@@ -1,9 +1,12 @@
 'use strict';
 (function () {
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
-  var avatarDefaultLogo = document.querySelector('.ad-form-header__preview img');
-  var avatarDefaultSrc = avatarDefaultLogo.src;
 
+  /**
+   * Создаёт превью изображения
+   * @param {string} photoSrc - путь изображения
+   * @return {HTMLImageElement} - изображение
+   */
   var createPhoto = function (photoSrc) {
     var adPhoto = document.createElement('IMG');
     adPhoto.classList.add('popup__photo');
@@ -14,6 +17,11 @@
     return adPhoto;
   };
 
+  /**
+   * Удаляет превью изображения по нажатию на него
+   * @param {*} evt - объект события
+   * @return {void}
+   */
   var photoClickHandler = function (evt) {
     evt.preventDefault();
     if (evt.target.tagName === 'IMG') {
@@ -21,7 +29,13 @@
     }
   };
 
-  window.avatarChooserChangeHandler = function (chooser, renderPlace) {
+  /**
+   * Добавляет одно изображение без перезагрузки страницы
+   * @param {HTMLInputElement} chooser
+   * @param {HTMLImageElement} renderImage
+   * @return {void}
+   */
+  var singlePhotoChooserChangeHandler = function (chooser, renderImage) {
     var file = chooser.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -33,14 +47,20 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        renderPlace.src = reader.result;
+        renderImage.src = reader.result;
       });
 
       reader.readAsDataURL(file);
     }
   };
 
-  window.photoChooserChangeHandler = function (chooser, renderPlace) {
+  /**
+   * Добавляет несколько изображений без перезагрузки страницы
+   * @param {HTMLInputElement} chooser
+   * @param {HTMLDivElement} renderPlace
+   * @return {void}
+   */
+  var multiPhotoChooserChangeHandler = function (chooser, renderPlace) {
     var files = chooser.files;
 
     var matches = Array.prototype.slice.call(files).every(function (item) {
@@ -67,12 +87,8 @@
     }
   };
 
-  window.clearAvatar = function () {
-    avatarDefaultLogo.src = avatarDefaultSrc;
+  window.uploadPhoto = {
+    single: singlePhotoChooserChangeHandler,
+    multi: multiPhotoChooserChangeHandler
   };
-
-  window.clearPhotos = function (renderPlace) {
-    renderPlace.innerHTML = '';
-  };
-
 })();

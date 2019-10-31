@@ -5,12 +5,22 @@
     .content
     .querySelector('.map__card');
 
+  /**
+   * Закрывает карточку предложения размещения по клавише "Esc"
+   * @param {object} evt - объект события
+   * @return {void}
+   */
   var adCardPressEscHandler = function (evt) {
     if (evt.keyCode === window.params.keyCode.ESC) {
       closeAdCard();
+      window.pin.deactivate();
     }
   };
 
+  /**
+   * Отображает карточку предложения размещения
+   * @return {void}
+   */
   var openAdCard = function () {
     var mapCard = document.querySelector('.map__card.popup');
     var mapCardClose = mapCard.querySelector('.popup__close');
@@ -19,22 +29,37 @@
     document.addEventListener('keydown', adCardPressEscHandler);
   };
 
+  /**
+   * Закрывает карточку предложения размещения
+   * @return {void}
+   */
   var closeAdCard = function () {
     var mapCard = document.querySelector('.map__card.popup');
-    var activePin = document.querySelector('.map__pin--active');
+    var mapCardClose = mapCard.querySelector('.popup__close');
     if (mapCard) {
       document.removeEventListener('keydown', adCardPressEscHandler);
+      mapCardClose.removeEventListener('click', closeAdCard);
+      window.pin.deactivate();
       mapCard.remove();
-      activePin.classList.remove('map__pin--active');
     }
   };
 
+  /**
+   * Создаёт в карточке предложения дополнительный параметр(парковка, кухня и т.д.)
+   * @param {String} adFeature - название дополнительного параметра
+   * @return {HTMLLIElement} - li-элемент разметки с соответствующим классом
+   */
   var createAdFeatureHtml = function (adFeature) {
     var adFeatureElement = document.createElement('li');
     adFeatureElement.className = 'popup__feature popup__feature--' + adFeature;
     return adFeatureElement;
   };
 
+  /**
+   * Создаёт в карточке предложения превью фотографии
+   * @param {String} adPhoto  - адрес изображения
+   * @return {HTMLImageElement} - превью фотографии
+   */
   var createAdPhotoHtml = function (adPhoto) {
     var adPhotoElement = document.createElement('img');
     adPhotoElement.src = adPhoto;
@@ -45,10 +70,40 @@
     return adPhotoElement;
   };
 
+  /**
+   * Объект в котором хранятся данные предложения размещения
+   * @typedef { author: {
+   *              avatar: string
+   *            },
+   *            location: {
+   *              x: number,
+   *              y: number
+   *            },
+   *            offer: {
+   *              address: string,
+   *              checkin: string,
+   *              checkout: string,
+   *              description: string,
+   *              features: object[],
+   *              guests: number,
+   *              photos: object[],
+   *              price: number,
+   *              rooms: number,
+   *              title: string,
+   *              type: string,
+   *            }
+   *          } Ad
+   */
+
+  /**
+   * Отрисовывает карточку предложения и помещает ёё в разметку
+   * @param {Ad} ad - данные предолжения для заполнения карточки
+   * @return {void}
+   */
   var renderAdCard = function (ad) {
     var cardElement = mapCardTemplate.cloneNode(true);
-    var adFeaturesFragment = window.util.createFragment(ad.offer.features, createAdFeatureHtml, 0);
-    var adPhotosFragment = window.util.createFragment(ad.offer.photos, createAdPhotoHtml, 0);
+    var adFeaturesFragment = window.createFragment(ad.offer.features, createAdFeatureHtml, 0);
+    var adPhotosFragment = window.createFragment(ad.offer.photos, createAdPhotoHtml, 0);
 
     cardElement.querySelector('.popup__avatar').src = ad.author.avatar;
     cardElement.querySelector('.popup__title').textContent = ad.offer.title;

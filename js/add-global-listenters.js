@@ -47,10 +47,10 @@
     window.mainPin.dragDrop(evt);
   };
 
-  var windowLoadHandler = function () {
+  var windowDOMContentLoadedHandler = function () {
     deactivatePage();
     window.mainPin.saveStartCoordinates();
-    window.removeEventListener('load', windowLoadHandler);
+    window.removeEventListener('load', windowDOMContentLoadedHandler);
   };
 
   var mainPinMouseDownHandler = function (evt) {
@@ -84,7 +84,7 @@
     deactivatePage();
   };
 
-  window.addEventListener('load', windowLoadHandler);
+  window.addEventListener('DOMContentLoaded', windowDOMContentLoadedHandler);
 
   mainPin.addEventListener('mousedown', mainPinMouseDownHandler);
 
