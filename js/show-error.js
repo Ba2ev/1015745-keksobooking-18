@@ -43,6 +43,7 @@
 
   /**
    * Создаёт popup с сообщением
+   * @param {string} text
    * @return {void}
    */
   window.showError = function (text) {
