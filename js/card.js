@@ -35,8 +35,8 @@
    */
   var closeAdCard = function () {
     var mapCard = document.querySelector('.map__card.popup');
-    var mapCardClose = mapCard.querySelector('.popup__close');
     if (mapCard) {
+      var mapCardClose = mapCard.querySelector('.popup__close');
       document.removeEventListener('keydown', adCardPressEscHandler);
       mapCardClose.removeEventListener('click', closeAdCard);
       window.pin.deactivate();
